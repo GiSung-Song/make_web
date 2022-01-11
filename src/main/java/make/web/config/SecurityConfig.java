@@ -14,7 +14,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception { // HTTP 요청에 대한 보안 설정
-        super.configure(http);
+
     }
 
     @Bean
