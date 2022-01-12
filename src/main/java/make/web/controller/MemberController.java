@@ -35,6 +35,7 @@ public class MemberController {
     public String signUp(@Valid @ModelAttribute("member") MemberFormDto memberFormDto, BindingResult bindingResult, Model model) {
 
         if(bindingResult.hasErrors()) {
+            log.info("validation error");
             return "member/createMemberForm";
         }
 
@@ -42,6 +43,7 @@ public class MemberController {
             Member member = Member.createUser(memberFormDto, passwordEncoder);
             memberService.saveMember(member);
         } catch (IllegalStateException e) {
+            log.info("duplicate email");
             model.addAttribute("errorMessage", e.getMessage());
             return "member/createMemberForm";
         }
@@ -49,5 +51,18 @@ public class MemberController {
         log.info("create user success");
 
         return "redirect:/";
+    }
+
+    @GetMapping("/login")
+    public String login() {
+        log.info("/member/login 로그인 페이지로 이동");
+        return "/member/loginMemberForm";
+    }
+
+    @GetMapping("/login/error")
+    public String loginError(Model model) {
+        log.info("로그인 오류");
+        model.addAttribute("errorMsg", "아이디 또는 비밀번호를 확인해주세요.");
+        return "/member/loginMemberForm";
     }
 }

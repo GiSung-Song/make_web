@@ -1,5 +1,6 @@
 package make.web.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,4 +27,12 @@ public class MemberFormDto {
 
     @NotEmpty(message = "주소를 입력해주세요.")
     private String address; //주소
+
+    @Builder
+    public MemberFormDto(String name, String email, String password, String address) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.address = address;
+    }
 }
