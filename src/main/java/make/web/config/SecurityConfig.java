@@ -33,7 +33,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/member/login") //로그인 페이지 url -> /member/login으로 로그인 url을 설정
                 .defaultSuccessUrl("/") //로그인 성공 시 url -> /로 지정하여 홈으로 이동
                 .usernameParameter("email") //로그인 시 사용할 파라미터를 email로 설정
-                .passwordParameter("password")
                 .failureUrl("/member/login/error") //로그인 실패 시 url -> /member/login/error 페이지로 이동
                 .and()
                 .logout()

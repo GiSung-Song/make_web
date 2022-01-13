@@ -23,6 +23,9 @@ public class Member {
     private String name; //회원 이름
 
     @Column(unique = true)
+    private String phone; //전화번호
+
+    @Column(unique = true)
     private String email; //이메일
 
     private String password; //비밀번호
@@ -33,20 +36,21 @@ public class Member {
     private Role role; //ADMIN or USER or GUEST
 
     @Builder
-    public Member(String name, String email, String password, String address, Role role) {
+    public Member(String name, String email, String password, String address, Role role, String phone) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.address = address;
         this.role = role;
+        this.phone = phone;
     }
 
-    //일반 USER 생성
-    public static Member createUser(MemberFormDto memberFormDto, PasswordEncoder passwordEncoder) {
+    public static Member createMember(MemberFormDto memberFormDto, PasswordEncoder passwordEncoder) {
         Member member = Member.builder()
                 .name(memberFormDto.getName())
                 .email(memberFormDto.getEmail())
                 .address(memberFormDto.getAddress())
+                .phone(memberFormDto.getPhone())
                 .password(passwordEncoder.encode(memberFormDto.getPassword()))
                 .role(Role.USER)
                 .build();
@@ -54,3 +58,4 @@ public class Member {
         return member;
     }
 }
+

@@ -32,22 +32,27 @@
         <div class="form-group">
             <label th:for="name">이름</label>
             <input type="text" th:field="*{name}" class="form-control" placeholder="이름을 입력해주세요">
-            <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="fieldError">Incorrect data</p>
+            <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="fieldError">이름</p>
         </div>
         <div class="form-group">
             <label th:for="email">이메일</label>
             <input type="email" th:field="*{email}" class="form-control" placeholder="이메일을 입력해주세요">
-            <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="fieldError">Incorrect data</p>
+            <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="fieldError">이메일</p>
         </div>
         <div class="form-group">
             <label th:for="password">비밀번호</label>
             <input type="password" th:field="*{password}" class="form-control" placeholder="비밀번호 입력">
-            <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="fieldError">Incorrect data</p>
+            <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="fieldError">비밀번호</p>
         </div>
         <div class="form-group">
             <label th:for="address">주소</label>
             <input type="text" th:field="*{address}" class="form-control" placeholder="주소를 입력해주세요">
-            <p th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="fieldError">Incorrect data</p>
+            <p th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="fieldError">주소</p>
+        </div>
+        <div class="form-group">
+            <label th:for="phone">휴대폰 번호</label>
+            <input type="text" th:field="*{phone}" class="form-control" placeholder="휴대폰 번호를 입력해주세요">
+            <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="fieldError">휴대폰 번호</p>
         </div>
         <div style="text-align: center">
             <button type="submit" class="btn btn-primary" style="">회원가입</button>

@@ -39,7 +39,7 @@ class MemberControllerTest {
                 .address("서울시 메시")
                 .build();
 
-        Member member = Member.createUser(memberFormDto, passwordEncoder);
+        Member member = Member.createMember(memberFormDto, passwordEncoder);
         return memberService.saveMember(member);
     }
 

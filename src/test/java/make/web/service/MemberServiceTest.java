@@ -33,7 +33,7 @@ class MemberServiceTest {
                 .address("서울시 메시")
                 .build();
 
-        return Member.createUser(memberFormDto, passwordEncoder);
+        return Member.createMember(memberFormDto, passwordEncoder);
     }
 
     @Test
