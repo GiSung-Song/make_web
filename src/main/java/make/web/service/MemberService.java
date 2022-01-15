@@ -85,4 +85,13 @@ public class MemberService implements UserDetailsService {
         } else
             return member;
     }
+
+    public Member infoMember(String email) {
+        Member member = memberRepository.findByEmail(email);
+
+        if(member == null) {
+            throw new EntityNotFoundException("등록된 이메일이 없습니다.");
+        } else
+            return member;
+    }
 }

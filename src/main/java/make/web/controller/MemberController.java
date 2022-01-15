@@ -11,13 +11,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/member")
@@ -35,7 +34,8 @@ public class MemberController {
     }
 
     @PostMapping("/new")
-    public String signUp(@Valid @ModelAttribute("member") MemberFormDto memberFormDto, BindingResult bindingResult, Model model) {
+    public String signUp(@Valid @ModelAttribute("member") MemberFormDto memberFormDto,
+                         BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
 
         if(bindingResult.hasErrors()) {
             log.info("validation error");
@@ -50,7 +50,6 @@ public class MemberController {
             model.addAttribute("errorMessage", e.getMessage());
             return "member/createMemberForm";
         }
-
         log.info("create user success");
 
         return "redirect:/";
@@ -85,7 +84,8 @@ public class MemberController {
 
         try {
             Member member = memberService.findMemberId(findIdFormDto);
-            model.addAttribute("findMail", member.getEmail());
+            String findMail = member.getEmail();
+            model.addAttribute("findMail", findMail);
         } catch (EntityNotFoundException e) {
             log.info("등록된 이메일이 없는 경우");
             model.addAttribute("errorMessage", e.getMessage());
@@ -123,5 +123,31 @@ public class MemberController {
         return "/member/find/pwForm";
     }
 
+    @GetMapping("/{member_id}")
+    public String infoMember(@PathVariable("member_id") Long id, Principal principal, Model model) {
+        log.info("회원 정보 페이지로 이동");
+
+        String email = principal.getName();
+
+        try {
+            Member member = memberService.infoMember(email);
+
+            MemberFormDto memberFormDto = MemberFormDto.builder()
+                    .email(member.getEmail())
+                    .name(member.getName())
+                    .phone(member.getPhone())
+                    .address(member.getAddress())
+                    .build();
+
+            model.addAttribute("member", memberFormDto);
+
+        } catch (EntityNotFoundException e) {
+            log.info("error");
+
+            return "/main";
+        }
+
+        return "/member/infoMemberForm";
+    }
 
 }
