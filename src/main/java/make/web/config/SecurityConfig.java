@@ -50,7 +50,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         ;
 
         http.authorizeRequests()
-                .mvcMatchers("/", "/member/**").permitAll() //홈 화면, 회원가입 화면은 모두 접근 가능
+                .mvcMatchers("/", "/member/new/**", "/member/findId",
+                        "/member/login/**", "/member/findPw", "/member/logout/**").permitAll() //홈 화면, 회원가입 화면은 모두 접근 가능
                 .mvcMatchers("/admin/**").hasRole("ADMIN") //admin 밑 페이지들은 ADMIN ROLE을 가지고 있어야 함
                 .anyRequest().authenticated() //나머지 url은 모두 인증을 거쳐야 함.
         ;

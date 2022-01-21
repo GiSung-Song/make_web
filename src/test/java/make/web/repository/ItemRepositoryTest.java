@@ -24,7 +24,6 @@ class ItemRepositoryTest {
                 .itemNm("테스트 상품")
                 .price(1000)
                 .detail("테스트 내용")
-                .regTime(LocalDateTime.now())
                 .sellStatus(SellStatus.SELL)
                 .stock(10)
                 .build();

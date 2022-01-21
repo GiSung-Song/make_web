@@ -52,7 +52,7 @@ public class MemberController {
         }
         log.info("create user success");
 
-        return "redirect:/";
+        return "redirect:/member/login";
     }
 
     @GetMapping("/login")
@@ -127,9 +127,8 @@ public class MemberController {
     public String infoMember(@PathVariable("member_id") Long id, Principal principal, Model model) {
         log.info("회원 정보 페이지로 이동");
 
-        String email = principal.getName();
-
         try {
+            String email = principal.getName();
             Member member = memberService.infoMember(email);
 
             MemberFormDto memberFormDto = MemberFormDto.builder()

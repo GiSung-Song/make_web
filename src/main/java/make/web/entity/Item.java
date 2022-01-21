@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "item")
 @NoArgsConstructor
-public class Item {
+public class Item extends BaseEntity {
 
     @Id
     @Column(name = "item_id")
@@ -33,27 +33,22 @@ public class Item {
     @Column(nullable = false)
     private int price; //상품 가격
 
-    @Column(nullable = false)
-    private int stock; //재고량
-
     @Lob
     @Column(nullable = false)
     private String detail; //상품 설명
 
-    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private String region; //거래 지역
+
+   @Enumerated(EnumType.STRING)
     private SellStatus sellStatus; //판매 상태
 
-    private LocalDateTime regTime; //상품 등록 시간
-
-    private LocalDateTime updateTime; //수정 시간
-
     @Builder
-    public Item(String itemNm, int price, int stock, String detail, SellStatus sellStatus, LocalDateTime regTime) {
+    public Item(String itemNm, int price, int stock, String detail, SellStatus sellStatus, String region) {
         this.itemNm = itemNm;
         this.price = price;
-        this.stock = stock;
         this.detail = detail;
         this.sellStatus = sellStatus;
-        this.regTime = regTime;
+        this.region = region;
     }
 }

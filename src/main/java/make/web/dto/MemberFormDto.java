@@ -26,7 +26,7 @@ public class MemberFormDto {
     private String address; //주소
 
     @NotEmpty(message = "휴대폰 번호를 입력해주세요.")
-    @Pattern(regexp = "^01(?:0|1|[6-9])[.-]?(\\d{3}|\\d{4})[.-]?(\\d{4})$", message = "10 ~ 11 자리의 숫자만 입력 가능합니다.")
+    @Pattern(regexp = "^01(?:0|1|[6-9])[-](\\d{3}|\\d{4})[-](\\d{4})$", message = "###-####-#### 방식으로 입력해주세요.")
     private String phone;
 
     @Builder

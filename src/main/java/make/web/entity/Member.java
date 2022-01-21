@@ -5,15 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import make.web.constant.Role;
 import make.web.dto.MemberFormDto;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "member")
 @Getter
 @NoArgsConstructor
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     @Column(name = "member_id")
@@ -35,7 +37,10 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role; //ADMIN or USER or GUEST
 
-    @Builder
+    @CreatedDate
+    private LocalDateTime regTime; //회원 가입 일시시
+
+   @Builder
     public Member(String name, String email, String password, String address, Role role, String phone) {
         this.name = name;
         this.email = email;
@@ -46,11 +51,14 @@ public class Member {
     }
 
     public static Member createMember(MemberFormDto memberFormDto, PasswordEncoder passwordEncoder) {
+        String dtoPhone = memberFormDto.getPhone();
+        dtoPhone = dtoPhone.replaceAll("-", "");
+
         Member member = Member.builder()
                 .name(memberFormDto.getName())
                 .email(memberFormDto.getEmail())
                 .address(memberFormDto.getAddress())
-                .phone(memberFormDto.getPhone())
+                .phone(dtoPhone)
                 .password(passwordEncoder.encode(memberFormDto.getPassword()))
                 .role(Role.USER)
                 .build();
