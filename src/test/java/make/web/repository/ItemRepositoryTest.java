@@ -25,7 +25,6 @@ class ItemRepositoryTest {
                 .price(1000)
                 .detail("테스트 내용")
                 .sellStatus(SellStatus.SELL)
-                .stock(10)
                 .build();
 
         itemRepository.save(item);

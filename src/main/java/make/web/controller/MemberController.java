@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.PrintWriter;
 import java.security.Principal;
 
 @Controller
@@ -52,7 +55,10 @@ public class MemberController {
         }
         log.info("create user success");
 
-        return "redirect:/member/login";
+        redirectAttributes.addFlashAttribute("msg", "회원가입이 성공하였습니다.");
+        redirectAttributes.addFlashAttribute("url", "/member/login");
+
+        return "redirect:/message";
     }
 
     @GetMapping("/login")

@@ -2,12 +2,14 @@ package make.web.entity;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "item_img")
 @Getter
+@NoArgsConstructor
 public class ItemImg extends BaseEntity {
 
     @Id
@@ -33,4 +35,13 @@ public class ItemImg extends BaseEntity {
         this.imgName = imgName;
         this.imgUrl = imgUrl;
     }
+
+    public void itemSet(Item item) {
+        this.item = item;
+    }
+
+    public void ynSet(String imgYn) {
+        this.imgYn = imgYn;
+    }
+
 }

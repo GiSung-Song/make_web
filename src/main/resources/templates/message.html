@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <script th:inline="javascript">
+        var msg = [[${msg}]];
+        var url = [[${url}]];
+        alert(msg);
+        location.href = url;
+    </script>
+</html>

@@ -31,4 +31,9 @@ public class MainController {
         }
         return "main";
     }
+
+    @GetMapping("/message")
+    public String message(Model model) {
+        return "message";
+    }
 }

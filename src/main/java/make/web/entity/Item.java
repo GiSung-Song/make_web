@@ -44,7 +44,7 @@ public class Item extends BaseEntity {
     private SellStatus sellStatus; //판매 상태
 
     @Builder
-    public Item(String itemNm, int price, int stock, String detail, SellStatus sellStatus, String region) {
+    public Item(String itemNm, int price, String detail, SellStatus sellStatus, String region) {
         this.itemNm = itemNm;
         this.price = price;
         this.detail = detail;
