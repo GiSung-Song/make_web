@@ -55,7 +55,7 @@ class ItemServiceTest {
         ItemFormDto dto = new ItemFormDto();
         dto.setItemNm("테스트 상품");
         dto.setSellStatus(SellStatus.SELL);
-        dto.setPrice(10000);
+        dto.setPrice("10000");
         dto.setRegion("서울");
         dto.setDetail("상품내용");
 

@@ -10,6 +10,8 @@ import javax.validation.constraints.*;
 @Setter
 public class MemberFormDto {
 
+    private Long id;
+
     @NotBlank(message = "이름을 입력해주세요.")
     @Size(min = 1, max = 10, message = "이름은 1 ~ 10자로 입력해주세요.")
     private String name; //이름

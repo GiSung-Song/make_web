@@ -27,8 +27,8 @@ public class ItemFormDto {
     private String itemNm;
 
     @NotNull(message = "가격을 입력해주세요.")
-    @Pattern(regexp = "^[0-9]+$")
-    private Integer price; //상품 가격
+    @Pattern(regexp = "^[0-9]+$", message = "숫자만 입력가능합니다.")
+    private String price; //상품 가격
 
     @NotEmpty(message = "상품 설명을 입력해주세요.")
     private String detail; //상품 설명
@@ -55,7 +55,7 @@ public class ItemFormDto {
         Item item = Item.builder()
                 .itemNm(this.itemNm)
                 .detail(this.detail)
-                .price(this.price)
+                .price(Integer.parseInt(this.price))
                 .region(this.region)
                 .sellStatus(this.sellStatus)
                 .build();

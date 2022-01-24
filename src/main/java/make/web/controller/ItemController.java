@@ -3,14 +3,18 @@ package make.web.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import make.web.dto.ItemFormDto;
+import make.web.entity.Member;
 import make.web.service.ItemService;
+import make.web.service.MemberService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -28,8 +32,9 @@ public class ItemController {
     }
 
     @PostMapping("/new")
-    public String itemCreate(@Valid @ModelAttribute("item") ItemFormDto itemFormDto, Model model,
-                             BindingResult bindingResult, @RequestParam("itemImgFile")List<MultipartFile> itemImgFileList) {
+    public String itemCreate(@Valid @ModelAttribute("item") ItemFormDto itemFormDto,BindingResult bindingResult,
+                             Model model, RedirectAttributes redirectAttributes,
+                             @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList) {
 
         if(bindingResult.hasErrors()) {
             log.info("validation error");
@@ -50,8 +55,10 @@ public class ItemController {
             return "item/createItemForm";
         }
 
-        return "redirect:/";
+        redirectAttributes.addFlashAttribute("msg", "상품 등록이 완료되었습니다.");
+        redirectAttributes.addFlashAttribute("url", "/");
 
+        return "redirect:/message";
     }
 
 }
