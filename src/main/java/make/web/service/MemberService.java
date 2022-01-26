@@ -1,17 +1,14 @@
 package make.web.service;
 
-import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import make.web.dto.FindIdFormDto;
 import make.web.dto.FindPwFormDto;
-import make.web.dto.MemberFormDto;
 import make.web.entity.Member;
 import make.web.repository.MemberRepository;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +48,7 @@ public class MemberService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
         Member member = memberRepository.findByEmail(email);
 
         if(member == null) {
@@ -86,7 +84,7 @@ public class MemberService implements UserDetailsService {
             return member;
     }
 
-    public Member infoMember(String email) {
+    public Member getMember(String email) {
         Member member = memberRepository.findByEmail(email);
 
         if(member == null) {

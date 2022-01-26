@@ -121,9 +121,11 @@
 
         <div th:if="${#strings.isEmpty(item.id)}" style="text-align: center">
             <button th:formaction="@{/item/new}" type="submit" class="btn btn-primary">저장</button>
+            <button th:onclick="|location.href='@{/}'|" type="submit" class="btn btn-primary">취소</button>
         </div>
         <div th:unless="${#strings.isEmpty(item.id)}" style="text-align: center">
-            <button th:formaction="@{'/item/' + ${item.id} }" type="submit" class="btn btn-primary">수정</button>
+            <button th:formaction="@{'/item/' + ${item.id} + '/edit' }" type="submit" class="btn btn-primary">수정</button>
+            <button th:onclick="|location.href='@{/}'|" type="button" class="btn btn-primary">취소</button>
         </div>
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 

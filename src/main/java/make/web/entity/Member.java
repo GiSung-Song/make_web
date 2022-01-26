@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import make.web.constant.Role;
 import make.web.dto.MemberFormDto;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;

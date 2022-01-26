@@ -4,7 +4,14 @@
     <script th:inline="javascript">
         var msg = [[${msg}]];
         var url = [[${url}]];
-        alert(msg);
-        location.href = url;
+        var id = [[${id}]];
+
+        if(id != null) {
+            alert(msg);
+            location.href = url + "/" + id;
+        } else {
+            alert(msg);
+            location.href = url;
+        }
     </script>
 </html>

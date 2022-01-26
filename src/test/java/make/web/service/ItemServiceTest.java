@@ -48,7 +48,7 @@ class ItemServiceTest {
         return fileList;
     }
 
-
+/*
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void 아이템_저장_테스트() throws Exception {
@@ -73,5 +73,5 @@ class ItemServiceTest {
                 imgList.get(0).getOriImgName());
 
     }
-
+*/
 }

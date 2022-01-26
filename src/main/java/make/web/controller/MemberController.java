@@ -15,10 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.PrintWriter;
 import java.security.Principal;
 
 @Controller
@@ -129,13 +126,13 @@ public class MemberController {
         return "/member/find/pwForm";
     }
 
-    @GetMapping("/{member_id}")
-    public String infoMember(@PathVariable("member_id") Long id, Principal principal, Model model) {
+    @GetMapping("/{id}")
+    public String infoMember(@PathVariable("id") String id, Principal principal, Model model) {
         log.info("회원 정보 페이지로 이동");
 
         try {
             String email = principal.getName();
-            Member member = memberService.infoMember(email);
+            Member member = memberService.getMember(email);
 
             MemberFormDto memberFormDto = MemberFormDto.builder()
                     .email(member.getEmail())

@@ -3,13 +3,19 @@ package make.web.service;
 import lombok.RequiredArgsConstructor;
 import make.web.dto.ItemFormDto;
 import make.web.dto.ItemImgDto;
+import make.web.dto.ItemSearchDto;
 import make.web.entity.Item;
 import make.web.entity.ItemImg;
+import make.web.entity.Member;
 import make.web.repository.ItemImgRepository;
 import make.web.repository.ItemRepository;
+import make.web.repository.MemberRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -22,10 +28,13 @@ public class ItemService {
 
     private final ItemImgRepository itemImgRepository;
     private final ItemImgService itemImgService;
+    private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
 
-    public Long saveItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList) throws Exception {
+    public Long saveItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList, String email) throws Exception {
         Item item = itemFormDto.toEntity();
+        Member member = memberRepository.findByEmail(email);
+        item.addMember(member);
         itemRepository.save(item);
 
         for(int i=0; i<itemImgFileList.size(); i++) {
@@ -44,6 +53,17 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
+    public String getSeller(Long itemId) {
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(EntityNotFoundException::new);
+
+        String email = item.getMember().getEmail();
+
+        return email;
+    }
+
+
+    @Transactional(readOnly = true)
     public ItemFormDto getItemInfo(Long itemId) {
         List<ItemImg> itemImgList = itemImgRepository.findByItemIdOrderByIdAsc(itemId);
         List<ItemImgDto> itemImgDtoList = new ArrayList<>();
@@ -60,6 +80,26 @@ public class ItemService {
         itemFormDto.setItemImgDtoList(itemImgDtoList);
 
         return itemFormDto;
+    }
+
+    public Long updateItem(ItemFormDto dto, List<MultipartFile> fileList) throws Exception {
+
+        Item item = itemRepository.findById(dto.getId())
+                .orElseThrow(EntityNotFoundException::new);
+        item.updateItem(dto);
+
+        List<Long> imgId = dto.getItemImgIds();
+
+        for(int i=0; i< fileList.size(); i++) {
+            itemImgService.updateItemImg(imgId.get(i), fileList.get(i));
+        }
+
+        return item.getId();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Item> getItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
+        return itemRepository.getItemPage(itemSearchDto, pageable);
     }
 
 }

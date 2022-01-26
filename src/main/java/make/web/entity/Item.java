@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import make.web.constant.SellStatus;
+import make.web.dto.ItemFormDto;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -43,6 +44,10 @@ public class Item extends BaseEntity {
    @Enumerated(EnumType.STRING)
     private SellStatus sellStatus; //판매 상태
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member; //회원이 item 판매
+
     @Builder
     public Item(String itemNm, int price, String detail, SellStatus sellStatus, String region) {
         this.itemNm = itemNm;
@@ -50,5 +55,17 @@ public class Item extends BaseEntity {
         this.detail = detail;
         this.sellStatus = sellStatus;
         this.region = region;
+    }
+
+    public void addMember(Member member) {
+        this.member = member;
+    }
+
+    public void updateItem(ItemFormDto dto) {
+        this.itemNm = dto.getItemNm();
+        this.price = Integer.parseInt(dto.getPrice());
+        this.region = dto.getRegion();
+        this.detail = dto.getDetail();
+        this.sellStatus = dto.getSellStatus();
     }
 }
