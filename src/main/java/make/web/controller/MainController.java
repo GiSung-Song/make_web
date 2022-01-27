@@ -16,14 +16,6 @@ public class MainController {
     @GetMapping("/")
     public String main(Principal principal, Model model) {
         log.info("홈 화면 이동");
-
-        if(principal != null) {
-
-            log.info("principal.getName() = {}", principal.getName());
-
-            String id = principal.getName();
-            model.addAttribute("email", id);
-        }
         return "main";
     }
 

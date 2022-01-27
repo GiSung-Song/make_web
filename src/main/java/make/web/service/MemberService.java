@@ -1,6 +1,7 @@
 package make.web.service;
 
 import lombok.RequiredArgsConstructor;
+import make.web.config.CustomUserDetails;
 import make.web.dto.FindIdFormDto;
 import make.web.dto.FindPwFormDto;
 import make.web.entity.Member;
@@ -55,11 +56,7 @@ public class MemberService implements UserDetailsService {
             throw new UsernameNotFoundException(email);
         }
 
-        return User.builder()
-                .username(member.getEmail())
-                .password(member.getPassword())
-                .roles(member.getRole().toString())
-                .build();
+        return new CustomUserDetails(member);
     }
 
     public Member findByNameAndPhone(FindIdFormDto findIdFormDto) {

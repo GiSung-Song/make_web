@@ -59,14 +59,15 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public Page<Item> getItemPage(ItemSearchDto dto, Pageable pageable) {
+    public Page<Item> getItemPage(ItemSearchDto dto, Pageable pageable, Long memberId) {
         QueryResults<Item> results = queryFactory
                 .selectFrom(QItem.item)
-                .where(regDateAfter(dto.getSearchDateType()),
+                .where(QItem.item.member.id.eq(memberId),
+                        regDateAfter(dto.getSearchDateType()),
                         searchSellStatusEq(dto.getSearchSellStatus()),
                         searchByLike(dto.getSearchBy(),
                         dto.getSearchQuery()))
-                .orderBy(QItem.item.id.desc())
+                .orderBy(QItem.item.id.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();

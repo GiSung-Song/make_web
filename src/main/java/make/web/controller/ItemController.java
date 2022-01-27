@@ -171,17 +171,17 @@ public class ItemController {
     }
 
     @GetMapping(value = {"/{memberId}/items", "/{memberId}/items/{page}"})
-    public String itemManage(ItemSearchDto itemSearchDto, @PathVariable("memberId") String memberId,
+    public String itemManage(ItemSearchDto itemSearchDto, @PathVariable("memberId") Long memberId,
                              @PathVariable("page")Optional<Integer> page, Model model) {
 
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 5); //한 페이지에 5개씩 배치
-        Page<Item> items = itemService.getItemPage(itemSearchDto, pageable);
+        Page<Item> items = itemService.getItemPage(itemSearchDto, pageable, memberId);
 
         model.addAttribute("items", items);
         model.addAttribute("dto", itemSearchDto);
         model.addAttribute("maxPage", 5); //페이지 수를 5개씩 끊음
 
-        return "item/itemMng";
+        return "item/itemSellList";
     }
 
 }
