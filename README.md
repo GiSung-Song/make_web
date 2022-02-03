@@ -20,3 +20,6 @@ Spring Boot와 MySQL을 이용
   - 찜 목록
   - 이메일 인증
   - 대화함
+
+#### 참조
+스프링 부트 쇼핑몰 프로젝트 with JPA 책(html, css 등)
