@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import make.web.dto.ItemFormDto;
 import make.web.dto.ItemImgDto;
 import make.web.dto.ItemSearchDto;
+import make.web.dto.MainItemDto;
 import make.web.entity.Item;
 import make.web.entity.ItemImg;
 import make.web.entity.Member;
@@ -98,8 +99,13 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Item> getItemPage(ItemSearchDto itemSearchDto, Pageable pageable, Long memberId) {
-        return itemRepository.getItemPage(itemSearchDto, pageable, memberId);
+    public Page<Item> getSellPage(ItemSearchDto itemSearchDto, Pageable pageable, Long memberId) {
+        return itemRepository.getSellPage(itemSearchDto, pageable, memberId);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<MainItemDto> getMainPage(ItemSearchDto dto, Pageable pageable) {
+        return itemRepository.getMainPage(dto, pageable);
     }
 
 }

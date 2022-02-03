@@ -172,10 +172,10 @@ public class ItemController {
 
     @GetMapping(value = {"/{memberId}/items", "/{memberId}/items/{page}"})
     public String itemManage(ItemSearchDto itemSearchDto, @PathVariable("memberId") Long memberId,
-                             @PathVariable("page")Optional<Integer> page, Model model) {
+                             @PathVariable("page") Optional<Integer> page, Model model) {
 
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 5); //한 페이지에 5개씩 배치
-        Page<Item> items = itemService.getItemPage(itemSearchDto, pageable, memberId);
+        Page<Item> items = itemService.getSellPage(itemSearchDto, pageable, memberId);
 
         model.addAttribute("items", items);
         model.addAttribute("dto", itemSearchDto);

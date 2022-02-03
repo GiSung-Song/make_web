@@ -16,7 +16,7 @@
 
         function page(page){
             var searchDateType = $("#searchDateType").val();
-            var searchSellStatus = $("#sellStatus").val();
+            var searchSellStatus = $("#searchSellStatus").val();
             var searchBy = $("#searchBy").val();
             var searchQuery = $("#searchQuery").val();
             var loginUser = [[${#authentication.Principal.id}]];
@@ -45,10 +45,9 @@
         <table class="table">
             <thead>
             <tr>
-                <td>상품아이디</td>
+                <td>상품번호</td>
                 <td>상품명</td>
                 <td>상태</td>
-                <td>등록자</td>
                 <td>등록일</td>
             </tr>
             </thead>
@@ -59,7 +58,6 @@
                     <a th:href="'/item/'+${item.id}" th:text="${item.itemNm}"></a>
                 </td>
                 <td th:text="${item.sellStatus == T(make.web.constant.SellStatus).SELL} ? '판매중' : '판매완료'"></td>
-                <td th:text="${item.createdBy}"></td>
                 <td th:text="${item.regTime}"></td>
             </tr>
             </tbody>
@@ -91,7 +89,7 @@
             <select th:field="*{searchDateType}" class="form-control" style="width:auto;">
                 <option value="all">전체기간</option>
                 <option value="1d">1일</option>
-                <option value="1w">1주</option>
+                <option value="1w">1주일</option>
                 <option value="1m">1개월</option>
                 <option value="6m">6개월</option>
             </select>
@@ -102,7 +100,6 @@
             </select>
             <select th:field="*{searchBy}" class="form-control" style="width:auto;">
                 <option value="itemNm">상품명</option>
-                <option value="createdBy">등록자</option>
             </select>
             <input th:field="*{searchQuery}" type="text" class="form-control" placeholder="검색어를 입력해주세요">
             <button id="searchBtn" type="submit" class="btn btn-primary">검색</button>
