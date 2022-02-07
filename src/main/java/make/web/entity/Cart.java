@@ -10,12 +10,12 @@ import javax.persistence.*;
 @Table(name = "cart")
 @Getter
 @NoArgsConstructor
-public class Cart {
+public class Cart extends BaseEntity{
 
     @Id
     @Column(name = "cart_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id; //찜하기 번호
+    private Long id; //장바구니 번호
 
     /**
      * member_id를 외래키로 지정
@@ -28,8 +28,15 @@ public class Cart {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Builder
-    public Cart(Member member) {
+    public static Cart createCart(Member member) {
+        Cart cart = new Cart();
+        cart.addMember(member);
+
+        return cart;
+    }
+
+    public void addMember(Member member) {
         this.member = member;
     }
+
 }

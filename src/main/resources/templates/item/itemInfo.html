@@ -4,9 +4,53 @@
       layout:decorate="~{layouts/layout}">
 
 <head>
-    <input type="hidden" name="_csrf" th:content="${_csrf.token}/">
-    <input type="hidden" name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+        function addCart(){
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            var url = "/cart";
+            var paramData = {
+                itemId : $("#itemId").val(),
+            };
+
+            var param = JSON.stringify(paramData);
+
+            $.ajax({
+                url      : url,
+                type     : "POST",
+                contentType : "application/json",
+                data     : param,
+                beforeSend : function(xhr){
+                    xhr.setRequestHeader(header, token);
+                },
+                dataType : "json",
+                cache   : false,
+                success  : function(result, status){
+                    alert("상품을 장바구니에 담았습니다.");
+                    location.href='/';
+                },
+                error : function(jqXHR, status, error){
+
+                    if(jqXHR.status == '401'){
+                        alert('로그인 후 이용해주세요');
+                        location.href='/member/login';
+                    } else{
+                        alert(jqXHR.responseText);
+                    }
+
+                }
+            });
+        }
+
+    </script>
+</th:block>
 
 <!-- 사용자 CSS 추가 -->
 <th:block layout:fragment="css">
@@ -99,7 +143,6 @@
     <div th:if="${seller} == 'seller'" style="text-align: center">
         <button th:onclick="|location.href='@{/item/{item_id}/edit(item_id=${item.id})}'|" type="submit" class="btn btn-primary">수정</button>
     </div>
-    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 </div>
 
 </html>

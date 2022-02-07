@@ -21,4 +21,20 @@ public class CartItem {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
+
+    public static CartItem createCartItem(Cart cart, Item item) {
+        CartItem cartItem = new CartItem();
+        cartItem.setCart(cart);
+        cartItem.setItem(item);
+
+        return cartItem;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
 }

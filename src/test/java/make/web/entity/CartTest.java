@@ -49,7 +49,7 @@ class CartTest {
         Member member = ex_dto();
         memberRepository.save(member);
 
-        Cart cart = Cart.builder().member(member).build();
+        Cart cart = Cart.createCart(member);
         cartRepository.save(cart);
 
         /**
