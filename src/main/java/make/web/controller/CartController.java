@@ -3,8 +3,14 @@ package make.web.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import make.web.dto.CartItemDto;
+import make.web.dto.CartListDto;
+import make.web.dto.ItemSearchDto;
+import make.web.entity.Item;
 import make.web.service.CartService;
 import make.web.service.ItemService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @Slf4j
@@ -57,6 +64,15 @@ public class CartController {
         log.info("장바구니에 담기 성공");
 
         return new ResponseEntity<Long>(cartItemId, HttpStatus.OK);
+    }
+
+    @GetMapping("/cart")
+    public String cartManage(Principal principal, Model model) {
+
+        List<CartListDto> cartList = cartService.getCartList(principal.getName());
+        model.addAttribute("cartItems", cartList);
+
+        return "cart/cartList";
     }
 
 }
