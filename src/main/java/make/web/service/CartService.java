@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -70,5 +71,41 @@ public class CartService {
 
         return dtoList;
     }
+
+    public void deleteCartItem(Long cartItemId) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(EntityNotFoundException::new);
+        cartItemRepository.delete(cartItem);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean validateCartItem(Long cartItemId, String email) {
+        Member member = memberRepository.findByEmail(email);
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(EntityNotFoundException::new);
+
+        Member savedMember = cartItem.getCart().getMember();
+
+        if(!StringUtils.equals(member.getEmail(), savedMember.getEmail())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /*
+
+    public Long getCartId(String email) {
+        Member member = memberRepository.findByEmail(email);
+        Cart cart = cartRepository.findByMemberId(member.getId());
+
+        return cart.getId();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<CartListDto> getCart(ItemSearchDto itemSearchDto, Pageable pageable, Long cartId) {
+        return itemRepository.getCartPage(itemSearchDto, pageable, cartId);
+    }
+     */
 
 }

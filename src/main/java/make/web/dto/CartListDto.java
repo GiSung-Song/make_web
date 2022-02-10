@@ -10,6 +10,8 @@ public class CartListDto {
 
     private Long cartItemId;
 
+    private Long itemId;
+
     private String region;
 
     private String itemNm;
@@ -19,11 +21,12 @@ public class CartListDto {
     private String imgUrl;
 
     @QueryProjection
-    public CartListDto(Long cartItemId, String itemNm, int price, String imgUrl, String region) {
+    public CartListDto(Long cartItemId, String itemNm, int price, String imgUrl, String region, Long itemId) {
         this.cartItemId = cartItemId;
         this.region = region;
         this.itemNm = itemNm;
         this.price = price;
         this.imgUrl = imgUrl;
+        this.itemId = itemId;
     }
 }

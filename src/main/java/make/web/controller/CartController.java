@@ -5,9 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import make.web.dto.CartItemDto;
 import make.web.dto.CartListDto;
 import make.web.dto.ItemSearchDto;
+import make.web.dto.MainItemDto;
 import make.web.entity.Item;
+import make.web.entity.Member;
 import make.web.service.CartService;
 import make.web.service.ItemService;
+import make.web.service.MemberService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,11 +34,13 @@ public class CartController {
 
     private final CartService cartService;
     private final ItemService itemService;
+    private final MemberService memberService;
 
     @PostMapping("/cart")
     public @ResponseBody
     ResponseEntity addCart(@RequestBody @Valid CartItemDto cartItemDto, Model model,
                            BindingResult bindingResult, Principal principal) {
+
         if(bindingResult.hasErrors()) {
             StringBuilder sb = new StringBuilder();
             List<FieldError> fieldErrors = bindingResult.getFieldErrors();
@@ -69,10 +74,42 @@ public class CartController {
     @GetMapping("/cart")
     public String cartManage(Principal principal, Model model) {
 
+        log.info("장바구니 리스트 읽기");
+
         List<CartListDto> cartList = cartService.getCartList(principal.getName());
+
         model.addAttribute("cartItems", cartList);
 
+        log.info(cartList.get(1).getItemId().toString());
+
         return "cart/cartList";
+
+
+        /*
+
+        String email = principal.getName();
+        Long id = cartService.getCartId(email);
+
+        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 6);
+        Page<CartListDto> items = cartService.getCart(itemSearchDto, pageable, id);
+
+        model.addAttribute("items", items);
+        model.addAttribute("dto", itemSearchDto);
+        model.addAttribute("maxPage", 5); //페이지 수를 5개씩 끊음
+
+        return "cart/cartListV2";
+
+         */
+    }
+
+    @DeleteMapping("/cart/{cartItemId}")
+    public @ResponseBody ResponseEntity deleteCartItem(@PathVariable("cartItemId") Long cartItemId, Principal principal) {
+        if(!cartService.validateCartItem(cartItemId, principal.getName())) {
+            return new ResponseEntity<String>("수정 권한이 없습니다.", HttpStatus.FORBIDDEN);
+        }
+
+        cartService.deleteCartItem(cartItemId);
+        return new ResponseEntity<Long>(cartItemId, HttpStatus.OK);
     }
 
 }

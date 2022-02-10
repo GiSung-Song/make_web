@@ -111,4 +111,43 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 
         return new PageImpl<>(content, pageable, total);
     }
+
+/*
+    @Override
+    public Page<CartListDto> getCartPage(ItemSearchDto dto, Pageable pageable, Long cartId) {
+
+        QItem item = QItem.item;
+        QItemImg img = QItemImg.itemImg;
+        QCart cart = QCart.cart;
+        QCartItem cartItem = QCartItem.cartItem;
+
+        QueryResults<CartListDto> results = queryFactory
+                .select(new QCartListDto(
+                        item.id,
+                        item.itemNm,
+                        item.price,
+                        img.imgUrl,
+                        item.region
+                ))
+                .from(img, cartItem)
+                .where(regDateAfter(dto.getSearchDateType()),
+                        searchSellStatusEq(dto.getSearchSellStatus()),
+                        searchByLike(dto.getSearchBy(),
+                                dto.getSearchQuery()))
+                .join(cartItem.item)
+                .where(img.imgYn.eq("Y"))
+                .where(cartItem.cart.id.eq(cartId))
+                .where(img.item.id.eq(cartItem.item.id))
+                .orderBy(cartItem.regTime.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        List<CartListDto> content = results.getResults();
+        long total = results.getTotal();
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
+ */
 }

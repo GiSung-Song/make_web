@@ -2,11 +2,9 @@ package make.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import make.web.dto.CartItemDto;
 import make.web.dto.ItemFormDto;
 import make.web.dto.ItemSearchDto;
 import make.web.entity.Item;
-import make.web.entity.Member;
 import make.web.service.CartService;
 import make.web.service.ItemService;
 import org.springframework.data.domain.Page;
@@ -32,7 +30,6 @@ import java.util.Optional;
 public class ItemController {
 
     private final ItemService itemService;
-    private final CartService cartService;
 
     @GetMapping("/new")
     public String createItem(@ModelAttribute("item") ItemFormDto itemFormDto) {

@@ -26,7 +26,7 @@
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
 
-            var url = "/cartItem/" + cartItemId;
+            var url = "/cart/" + cartItemId;
 
             $.ajax({
                 url      : url,
@@ -92,39 +92,40 @@
 
         <table class="table">
             <colgroup>
+                <col width="65%"/>
                 <col width="15%"/>
-                <col width="70%"/>
-                <col width="15%"/>
+                <col width="20%"/>
             </colgroup>
             <thead>
             <tr class="text-center">
-                <td>
-                    <input type="checkbox" id="checkall" onclick="checkAll()"> 전체선택
-                </td>
                 <td>상품정보</td>
+                <td>지역</td>
                 <td>상품금액</td>
             </tr>
             </thead>
             <tbody>
             <tr th:each="cartItem : ${cartItems}">
-                <td class="text-center align-middle">
-                    <input type="checkbox" name="cartChkBox" th:value="${cartItem.cartItemId}">
-                </td>
                 <td class="d-flex">
                     <div class="repImgDiv align-self-center">
                         <img th:src="${cartItem.imgUrl}" class = "rounded repImg" th:alt="${cartItem.itemNm}">
                     </div>
                     <div class="align-self-center">
                         <span class="fs24 font-weight-bold">
-                            <a th:href="'/item/'+${cartItem.cartItemId}" th:text="${cartItem.itemNm}"></a>
+                            <a th:href="'/item/'+${cartItem.itemId}" th:text="${cartItem.itemNm}"></a>
                         </span>
                     </div>
+                </td>
+                <td class="text-center align-middle">
+                    <span th:text="${cartItem.region}"> </span>
                 </td>
                 <td class="text-center align-middle">
                     <span th:id="'price_' + ${cartItem.cartItemId}"
                           th:data-price="${cartItem.price}"
                           th:text="${cartItem.price} + '원'">
                     </span>
+                    <button type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true" th:data-id="${cartItem.cartItemId}" onclick="deleteCartItem(this)">&times;</span>
+                    </button>
                 </td>
             </tr>
             </tbody>
