@@ -6,6 +6,8 @@ import make.web.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -30,7 +32,7 @@ public class MessageService {
 
     public void readMessage(String email) {
 
-        Message message = messageRepository.findBySendTo(email);
+        List<MessageDto> messageList = messageRepository.findGetMessageList(email);
 
 
     }
