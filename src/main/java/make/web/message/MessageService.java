@@ -6,6 +6,7 @@ import make.web.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,11 +31,15 @@ public class MessageService {
         messageRepository.save(message);
     }
 
-    public void readMessage(String email) {
+    @Transactional(readOnly = true)
+    public List<MessageDto> readMessage(String email) {
 
-        List<MessageDto> messageList = messageRepository.findGetMessageList(email);
+        List<MessageDto> messageList = new ArrayList<>();
 
+        Member member = memberRepository.findByEmail(email);
+        messageList = messageRepository.findGetMessageList(member.getId());
 
+        return messageList;
     }
 
 }

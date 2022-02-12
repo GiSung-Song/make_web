@@ -8,15 +8,15 @@ import java.util.List;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
-    Message findBySendFrom(String sendFrom);
+    Message findBySendFrom(Long sendFrom);
 
-    Message findBySendTo(String sendTo);
+    Message findBySendTo(Long sendTo);
 
     @Query("select new make.web.message.MessageDto(m.sendTo, m.sendFrom, m.content, m.sendTime) " +
             "from Message m " +
-            "where m.sendTo.email = :email " +
+            "where m.sendTo.id = :id " +
             "order by m.sendTime desc"
     )
-    List<MessageDto> findGetMessageList(@Param("email") String email);
+    List<MessageDto> findGetMessageList(@Param("id") Long id);
 
 }
