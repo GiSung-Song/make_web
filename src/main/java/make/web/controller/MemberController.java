@@ -55,7 +55,7 @@ public class MemberController {
         redirectAttributes.addFlashAttribute("msg", "회원가입이 성공하였습니다.");
         redirectAttributes.addFlashAttribute("url", "/member/login");
 
-        return "redirect:/message";
+        return "redirect:/alert";
     }
 
     @GetMapping("/login")

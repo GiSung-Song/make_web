@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+
+<!-- 사용자 스크립트 추가 -->
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+        $(document).ready(function(){
+            $("#searchBtn").on("click",function(e) {
+                e.preventDefault();
+                page(0);
+            });
+        });
+
+        function page(page){
+            location.href="/message/list/" + page;
+        }
+
+    </script>
+</th:block>
+
+<!-- 사용자 CSS 추가 -->
+<th:block layout:fragment="css">
+    <style>
+        select{
+            margin-right:10px;
+        }
+    </style>
+</th:block>
+
+<div layout:fragment="content">
+
+    <form th:action="@{'/message/list/' + ${message.number}}" role="form" method="get" th:object="${message}">
+        <table class="table">
+            <thead>
+            <tr>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="msg, status: ${message.getContent()}">
+                <td th:text="${msg.id}"></td>
+                <td th:text="${msg.regTime}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div th:with="start=${(message.number/maxPage)*maxPage + 1}, end=(${(message.totalPages == 0) ? 1 : (start + (maxPage - 1) < message.totalPages ? start + (maxPage - 1) : message.totalPages)})" >
+            <ul class="pagination justify-content-center">
+
+                <li class="page-item" th:classappend="${message.first}?'disabled'">
+                    <a th:onclick="'javascript:page(' + ${message.number - 1} + ')'" aria-label='Previous' class="page-link">
+                        <span aria-hidden='true'>Previous</span>
+                    </a>
+                </li>
+
+                <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}" th:classappend="${message.number eq page-1}?'active':''">
+                    <a th:onclick="'javascript:page(' + ${page - 1} + ')'" th:inline="text" class="page-link">[[${page}]]</a>
+                </li>
+
+                <li class="page-item" th:classappend="${message.last}?'disabled'">
+                    <a th:onclick="'javascript:page(' + ${message.number + 1} + ')'" aria-label='Next' class="page-link">
+                        <span aria-hidden='true'>Next</span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+
+</html>

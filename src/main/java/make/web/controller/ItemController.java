@@ -68,7 +68,7 @@ public class ItemController {
             return "item/itemForm";
         }
 
-        return "redirect:/message";
+        return "redirect:/alert";
     }
 
     @GetMapping(value = "/{itemId}")
@@ -83,7 +83,7 @@ public class ItemController {
             redirectAttributes.addFlashAttribute("msg", "상품이 없습니다.");
             redirectAttributes.addFlashAttribute("url", "/");
 
-            return "redirect:/message";
+            return "redirect:/alert";
         }
 
         if(principal != null) {
@@ -107,7 +107,7 @@ public class ItemController {
                 redirectAttributes.addFlashAttribute("url", "/item");
                 redirectAttributes.addFlashAttribute("id", itemId);
 
-                return "redirect:/message";
+                return "redirect:/alert";
             }
 
             String login = principal.getName(); //로그인 한 사용자 이메일
@@ -119,7 +119,7 @@ public class ItemController {
                 redirectAttributes.addFlashAttribute("url", "/item");
                 redirectAttributes.addFlashAttribute("id", itemId);
 
-                return "redirect:/message";
+                return "redirect:/alert";
             }
 
         try {
@@ -131,7 +131,7 @@ public class ItemController {
             redirectAttributes.addFlashAttribute("url", "/item");
             redirectAttributes.addFlashAttribute("id", itemId);
 
-            return "redirect:/message";
+            return "redirect:/alert";
         }
 
         log.info("수정 폼으로 이동");
@@ -167,7 +167,7 @@ public class ItemController {
         redirectAttributes.addFlashAttribute("url", "/item");
         redirectAttributes.addFlashAttribute("id", itemId);
 
-        return "redirect:/message";
+        return "redirect:/alert";
     }
 
     @GetMapping(value = {"/{memberId}/items", "/{memberId}/items/{page}"})

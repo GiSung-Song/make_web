@@ -38,9 +38,6 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role; //ADMIN or USER or GUEST
 
-    @CreatedDate
-    private LocalDateTime regTime; //회원 가입 일시시
-
    @Builder
     public Member(String name, String email, String password, String address, Role role, String phone) {
         this.name = name;
