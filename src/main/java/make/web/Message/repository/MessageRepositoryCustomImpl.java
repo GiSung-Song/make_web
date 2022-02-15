@@ -1,15 +1,21 @@
-package make.web.Message;
+package make.web.Message.repository;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import make.web.entity.QMember;
+import make.web.Message.dto.MessageSearchDto;
+import make.web.Message.MessageStatus;
+
+import make.web.Message.entity.Message;
+import make.web.Message.entity.QMessage;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class MessageRepositoryCustomImpl implements MessageRepositoryCustom{
 
@@ -18,27 +24,27 @@ public class MessageRepositoryCustomImpl implements MessageRepositoryCustom{
     public MessageRepositoryCustomImpl(EntityManager em) { this.queryFactory = new JPAQueryFactory(em); }
 
     @Override
-    public Page<MessageDto> getMessageList(MessageSearchDto dto, Pageable pageable) {
+    public Page<Message> getMessageList(MessageSearchDto dto, Pageable pageable, Long memberId) {
         QMessage message = QMessage.message;
-        QMember member = QMember.member;
 
-        QueryResults<MessageDto> results = queryFactory
-                .select(new QMessageDto(
-                        message.id,
-                        message.sendTo,
-                        message.sendFrom,
-                        message.content,
-                        message.sendTime,
-                        message.readTime,
-                        message.confirm
-                ))
-                .from(message)
-                .join(message)
-                .where(message.sendTo.id.eq(message.id))
+        QueryResults<Message> results = queryFactory
+                .selectFrom(message)
+                .where(message.sendTo.id.eq(memberId),
+                        regDateAfter(dto.getSearchDateType()),
+                        confirmCheck(dto.getSearchConfirm()))
+                .orderBy(message.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        List<Message> content = results.getResults();
+        long total = results.getTotal();
+
+        return new PageImpl<>(content, pageable, total);
     }
 
-    private BooleanExpression confirmCheck(boolean confirm) {
-        return QMessage.message.confirm.eq(confirm);
+    private BooleanExpression confirmCheck(MessageStatus confirm) {
+        return confirm == null ? null : QMessage.message.confirm.eq(confirm);
     }
 
     private BooleanExpression regDateAfter(String searchDateType) {
@@ -58,6 +64,5 @@ public class MessageRepositoryCustomImpl implements MessageRepositoryCustom{
 
         return QMessage.message.sendTime.after(dateTime);
     }
-
 
 }

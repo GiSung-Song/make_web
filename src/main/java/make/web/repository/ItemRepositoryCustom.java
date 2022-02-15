@@ -1,7 +1,5 @@
 package make.web.repository;
 
-import make.web.dto.CartItemDto;
-import make.web.dto.CartListDto;
 import make.web.dto.ItemSearchDto;
 import make.web.dto.MainItemDto;
 import make.web.entity.Item;

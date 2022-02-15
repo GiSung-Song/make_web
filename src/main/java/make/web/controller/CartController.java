@@ -80,10 +80,7 @@ public class CartController {
 
         model.addAttribute("cartItems", cartList);
 
-        log.info(cartList.get(1).getItemId().toString());
-
         return "cart/cartList";
-
 
         /*
 

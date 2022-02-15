@@ -1,8 +1,9 @@
-package make.web.Message;
+package make.web.Message.entity;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import make.web.Message.MessageStatus;
 import make.web.entity.Member;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -30,7 +31,7 @@ public class Message {
 
     private String content; //내용
 
-    private Boolean confirm; //읽었는지 여부
+    private MessageStatus confirm; //읽었는지 여부
 
     private LocalDateTime readTime; //읽은 시간
 
@@ -42,6 +43,7 @@ public class Message {
         this.sendTo = sendTo;
         this.sendFrom = sendFrom;
         this.content = content;
-        this.confirm = false;
+        this.confirm = MessageStatus.NOT_READ;
+        this.sendTime = LocalDateTime.now();
     }
 }

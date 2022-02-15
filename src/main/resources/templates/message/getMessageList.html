@@ -15,7 +15,13 @@
         });
 
         function page(page){
-            location.href="/message/list/" + page;
+            var searchDateType = $("#searchDateType").val();
+            var searchConfirm = $("#searchConfirm").val();
+            var searchQuery = $("#searchQuery").val();
+
+            location.href="/message/list/" + page + "?searchDateType=" + searchDateType
+            + "&searchConfirm=" + searchConfirm
+            + "&searchQuery=" + searchQuery;
         }
 
     </script>
@@ -68,4 +74,22 @@
             </ul>
         </div>
 
+        <div class="form-inline justify-content-center" th:object="${dto}">
+            <select th:field="*{searchDateType}" class="form-control" style="width:auto;">
+                <option value="all">전체기간</option>
+                <option value="1d">1일</option>
+                <option value="1w">1주일</option>
+                <option value="1m">1개월</option>
+                <option value="6m">6개월</option>
+            </select>
+            <select th:field="*{searchConfirm}" class="form-control" style="width:auto;">
+                <option value="">전체</option>
+                <option value="READ">읽음</option>
+                <option value="NOT_READ">읽지않음</option>
+            </select>
+            <input th:field="*{searchQuery}" type="text" class="form-control" placeholder="검색어를 입력해주세요">
+            <button id="searchBtn" type="submit" class="btn btn-primary">검색</button>
+        </div>
+    </form>
+</div>
 </html>
