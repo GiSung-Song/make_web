@@ -28,8 +28,8 @@ public class MessageService {
         return entity.map(MessageDto::of);
     }
 
-    @Transactional(readOnly = true)
-    public Long sendMessage(SendMessageDto dto) {
+
+    public Long sendMessage(SendMessageDto dto) throws Exception {
         Member sender = memberRepository.findByEmail(dto.getSendFrom());
         Member receiver = memberRepository.findByEmail(dto.getSendTo());
 
@@ -37,6 +37,7 @@ public class MessageService {
                 .sendFrom(sender)
                 .sendTo(receiver)
                 .content(dto.getContent())
+                .title(dto.getTitle())
                 .build();
 
         messageRepository.save(message);

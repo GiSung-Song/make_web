@@ -31,7 +31,8 @@ public class MessageRepositoryCustomImpl implements MessageRepositoryCustom{
                 .selectFrom(message)
                 .where(message.sendTo.id.eq(memberId),
                         regDateAfter(dto.getSearchDateType()),
-                        confirmCheck(dto.getSearchConfirm()))
+                        confirmCheck(dto.getSearchConfirm()),
+                        titleNmLike(dto.getSearchQuery()))
                 .orderBy(message.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -45,6 +46,10 @@ public class MessageRepositoryCustomImpl implements MessageRepositoryCustom{
 
     private BooleanExpression confirmCheck(MessageStatus confirm) {
         return confirm == null ? null : QMessage.message.confirm.eq(confirm);
+    }
+
+    private BooleanExpression titleNmLike(String searchQuery) {
+        return StringUtils.isEmpty(searchQuery) ? null : QMessage.message.title.like("%" + searchQuery + "%");
     }
 
     private BooleanExpression regDateAfter(String searchDateType) {

@@ -49,6 +49,15 @@
             });
         }
 
+        function message() {
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            var seller = [[${email}]];
+
+            location.href='/message/send?email=' + seller;
+        }
+
     </script>
 </th:block>
 

@@ -42,12 +42,20 @@
         <table class="table">
             <thead>
             <tr>
+            <tr>
+                <td>메시지 번호</td>
+                <td>제목</td>
+                <td>상태</td>
+                <td>받은 시간</td>
+            </tr>
             </tr>
             </thead>
             <tbody>
             <tr th:each="msg, status: ${message.getContent()}">
-                <td th:text="${msg.id}"></td>
-                <td th:text="${msg.regTime}"></td>
+                <td th:text="${status.count}"></td>
+                <td th:text="${msg.title}"></td>
+                <td th:text="${msg.confirm == T(src/main/java/make/web/Message/MessageStatus).READ} ? '읽음' : '읽지않음'"></td>
+                <td th:text="${msg.sendTime}"></td>
             </tr>
             </tbody>
         </table>

@@ -53,12 +53,17 @@ class MessageServiceTest {
         sendMessageDto.setContent("테스트 내용입니다.");
 
 
-        Long messageId = messageService.sendMessage(sendMessageDto);
+        try {
+            Long messageId = messageService.sendMessage(sendMessageDto);
 
-        Message savedMessage = messageRepository.findById(messageId)
-                .orElseThrow(EntityNotFoundException::new);
 
-        assertEquals(savedMessage.getSendFrom().getEmail(), receiver.getEmail());
+            Message savedMessage = messageRepository.findById(messageId)
+                    .orElseThrow(EntityNotFoundException::new);
+
+            assertEquals(savedMessage.getSendFrom().getEmail(), receiver.getEmail());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

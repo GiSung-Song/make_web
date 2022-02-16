@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import make.web.Message.dto.MessageDto;
 import make.web.Message.dto.MessageSearchDto;
+import make.web.Message.dto.SendMessageDto;
 import make.web.Message.service.MessageService;
 import make.web.entity.Member;
 import make.web.service.MemberService;
@@ -12,9 +13,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Optional;
 
@@ -47,8 +54,42 @@ public class MessageController {
     }
 
     @GetMapping("/message/send")
-    public String readMessage(@PathVariable("messageId") Long messageId) {
-        return null;
+    public String sendMessageForm(@ModelAttribute("dto") SendMessageDto dto, Model model, Principal principal,
+                              HttpServletRequest request) {
+
+        String sendTo = request.getParameter("email");
+        model.addAttribute("sendTo", sendTo);
+
+        String sendFrom = principal.getName();
+        model.addAttribute("sendFrom", sendFrom);
+
+        return "message/sendMessage";
+    }
+
+    @PostMapping("/message/send")
+    public String sendMessage(@Valid @ModelAttribute("dto") SendMessageDto dto, BindingResult bindingResult,
+                              RedirectAttributes redirectAttributes, Model model) {
+
+        if(bindingResult.hasErrors()) {
+            return "message/sendMessage";
+        }
+
+        try {
+            Long messageId = messageService.sendMessage(dto);
+
+            log.info("messageId = {}", messageId);
+            log.info("sendTo = {}", dto.getSendTo());
+            log.info("sendFrom = {}", dto.getSendFrom());
+
+            redirectAttributes.addFlashAttribute("msg", "메시지 전송이 완료되었습니다.");
+            redirectAttributes.addFlashAttribute("url", "/");
+
+        } catch (Exception e) {
+            model.addAttribute("errorMsg", "메시지 전송이 실패했습니다.");
+            return "message/sendMessage";
+        }
+
+        return "redirect:/alert";
     }
 
 }

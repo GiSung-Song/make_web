@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import make.web.dto.ItemFormDto;
 import make.web.dto.ItemSearchDto;
 import make.web.entity.Item;
+import make.web.entity.Member;
 import make.web.service.CartService;
 import make.web.service.ItemService;
+import make.web.service.MemberService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +32,7 @@ import java.util.Optional;
 public class ItemController {
 
     private final ItemService itemService;
+    private final MemberService memberService;
 
     @GetMapping("/new")
     public String createItem(@ModelAttribute("item") ItemFormDto itemFormDto) {
@@ -86,12 +89,16 @@ public class ItemController {
             return "redirect:/alert";
         }
 
+        String seller = itemService.getSeller(itemId);
+
         if(principal != null) {
             String login = principal.getName();
-            String seller = itemService.getSeller(itemId);
 
             if (login.equals(seller)) {
                 model.addAttribute("seller", "seller");
+            }
+            else {
+                model.addAttribute("email", seller);
             }
         }
 

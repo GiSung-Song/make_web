@@ -23,23 +23,13 @@ public class MessageDto {
 
     private String content;
 
+    private String title;
+
     private LocalDateTime sendTime;
 
     private LocalDateTime readTime;
 
     private MessageStatus confirm;
-
-    @QueryProjection
-    public MessageDto(Long id, String sendTo, String sendFrom, String content, LocalDateTime sendTime,
-                      LocalDateTime readTime, MessageStatus confirm) {
-        this.id = id;
-        this.sendTo = sendTo;
-        this.sendFrom = sendFrom;
-        this.content = content;
-        this.sendTime = sendTime;
-        this.readTime = readTime;
-        this.confirm = confirm;
-    }
 
     public static MessageDto of(Message message) {
         return MessageDto.builder()
@@ -50,6 +40,7 @@ public class MessageDto {
                 .sendTime(message.getSendTime())
                 .readTime(message.getReadTime())
                 .confirm(message.getConfirm())
+                .title(message.getTitle())
                 .build();
     }
 }

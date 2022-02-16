@@ -8,6 +8,7 @@ import make.web.entity.Member;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
 @Entity
@@ -29,6 +30,8 @@ public class Message {
     @JoinColumn(referencedColumnName = "member_id", name = "send_from")
     private Member sendFrom; //보내는 이
 
+    private String title; //메시지 제목
+
     private String content; //내용
 
     private MessageStatus confirm; //읽었는지 여부
@@ -39,10 +42,11 @@ public class Message {
     private LocalDateTime sendTime; //보낸 시간
 
     @Builder
-    public Message(Member sendTo, Member sendFrom, String content) {
+    public Message(Member sendTo, Member sendFrom, String content, String title) {
         this.sendTo = sendTo;
         this.sendFrom = sendFrom;
         this.content = content;
+        this.title = title;
         this.confirm = MessageStatus.NOT_READ;
         this.sendTime = LocalDateTime.now();
     }
