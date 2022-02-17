@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import make.web.Message.MessageStatus;
 import make.web.entity.Member;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Table(name = "message")
+@DynamicUpdate
 public class Message {
 
     @Id
@@ -50,4 +52,14 @@ public class Message {
         this.confirm = MessageStatus.NOT_READ;
         this.sendTime = LocalDateTime.now();
     }
+
+    public void readFirst() {
+        this.readTime = LocalDateTime.now();
+        this.confirm = MessageStatus.READ;
+    }
+
+    public boolean isFirst() {
+        return this.confirm == MessageStatus.NOT_READ ? true : false;
+    }
+
 }

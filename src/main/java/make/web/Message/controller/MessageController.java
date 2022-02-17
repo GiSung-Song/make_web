@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Optional;
@@ -55,9 +56,10 @@ public class MessageController {
 
     @GetMapping("/message/send")
     public String sendMessageForm(@ModelAttribute("dto") SendMessageDto dto, Model model, Principal principal,
-                              HttpServletRequest request) {
+                                  HttpServletRequest request, HttpSession session) {
 
         String sendTo = request.getParameter("email");
+        session.setAttribute("sendTo", sendTo);
         model.addAttribute("sendTo", sendTo);
 
         String sendFrom = principal.getName();
@@ -68,19 +70,23 @@ public class MessageController {
 
     @PostMapping("/message/send")
     public String sendMessage(@Valid @ModelAttribute("dto") SendMessageDto dto, BindingResult bindingResult,
-                              RedirectAttributes redirectAttributes, Model model) {
+                              Principal principal, RedirectAttributes redirectAttributes,
+                              Model model, HttpSession session) {
 
         if(bindingResult.hasErrors()) {
+            String sendTo = (String) session.getAttribute("sendTo");
+            model.addAttribute("sendTo", sendTo);
+
+            String sendFrom = principal.getName();
+            model.addAttribute("sendFrom", sendFrom);
+
             return "message/sendMessage";
         }
 
         try {
             Long messageId = messageService.sendMessage(dto);
 
-            log.info("messageId = {}", messageId);
-            log.info("sendTo = {}", dto.getSendTo());
-            log.info("sendFrom = {}", dto.getSendFrom());
-
+            session.removeAttribute("sendTo");
             redirectAttributes.addFlashAttribute("msg", "메시지 전송이 완료되었습니다.");
             redirectAttributes.addFlashAttribute("url", "/");
 
@@ -90,6 +96,26 @@ public class MessageController {
         }
 
         return "redirect:/alert";
+    }
+
+    @GetMapping("/message/{messageId}")
+    public String getMessage(@PathVariable("messageId") Long messageId, Principal principal, Model model,
+                             RedirectAttributes redirectAttributes) {
+
+        try {
+            MessageDto messageDto = messageService.readMessage(messageId);
+            model.addAttribute("message", messageDto);
+            model.addAttribute("sendTo", messageDto.getSendFrom()); //답장하기 기능을 위해 받은 사람으로 메시지 보내기 위해
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("msg", "메시지가 없습니다.");
+            redirectAttributes.addFlashAttribute("url", "/message");
+            redirectAttributes.addFlashAttribute("id", messageId);
+
+            return "redirect:/alert";
+        }
+
+        return "message/getMessage";
+
     }
 
 }

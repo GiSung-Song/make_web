@@ -53,9 +53,11 @@
             <tbody>
             <tr th:each="msg, status: ${message.getContent()}">
                 <td th:text="${status.count}"></td>
-                <td th:text="${msg.title}"></td>
-                <td th:text="${msg.confirm == T(src/main/java/make/web/Message/MessageStatus).READ} ? '읽음' : '읽지않음'"></td>
-                <td th:text="${msg.sendTime}"></td>
+                <td>
+                    <a th:href="'/message/' + ${msg.id}" th:text="${msg.title}"></a>
+                </td>
+                <td th:text="${msg.confirm == T(make.web.Message.MessageStatus).READ} ? '읽음' : '읽지않음'"></td>
+                <td th:text="${#temporals.format(msg.sendTime, 'yyyy-MM-dd HH:mm')}"></td>
             </tr>
             </tbody>
         </table>

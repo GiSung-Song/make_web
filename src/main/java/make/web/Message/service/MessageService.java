@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -28,7 +30,6 @@ public class MessageService {
         return entity.map(MessageDto::of);
     }
 
-
     public Long sendMessage(SendMessageDto dto) throws Exception {
         Member sender = memberRepository.findByEmail(dto.getSendFrom());
         Member receiver = memberRepository.findByEmail(dto.getSendTo());
@@ -43,6 +44,17 @@ public class MessageService {
         messageRepository.save(message);
 
         return message.getId();
+    }
+
+    public MessageDto readMessage(Long messageId) {
+        Message message = messageRepository.findById(messageId)
+                .orElseThrow(EntityNotFoundException::new);
+
+        if(message.isFirst())
+            message.readFirst();
+
+        MessageDto messageDto = MessageDto.of(message);
+        return messageDto;
     }
 
 }
