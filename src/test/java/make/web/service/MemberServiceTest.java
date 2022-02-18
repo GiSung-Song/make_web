@@ -1,9 +1,8 @@
 package make.web.service;
 
-import make.web.dto.MemberFormDto;
-import make.web.entity.Member;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
+import make.web.member.dto.MemberFormDto;
+import make.web.member.entity.Member;
+import make.web.member.service.MemberService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

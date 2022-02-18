@@ -1,13 +1,14 @@
 package make.web.service;
 
-import make.web.constant.SellStatus;
-import make.web.dto.CartItemDto;
-import make.web.entity.CartItem;
-import make.web.entity.Item;
-import make.web.entity.Member;
-import make.web.repository.CartItemRepository;
-import make.web.repository.ItemRepository;
-import make.web.repository.MemberRepository;
+import make.web.cart.service.CartService;
+import make.web.etc.constant.SellStatus;
+import make.web.cart.dto.CartItemDto;
+import make.web.cart.entity.CartItem;
+import make.web.item.entity.Item;
+import make.web.member.entity.Member;
+import make.web.cart.repository.CartItemRepository;
+import make.web.item.repository.ItemRepository;
+import make.web.member.repository.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

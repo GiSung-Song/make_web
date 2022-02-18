@@ -1,13 +1,12 @@
 package make.web.repository;
 
-import make.web.constant.SellStatus;
-import make.web.entity.Item;
+import make.web.etc.constant.SellStatus;
+import make.web.item.entity.Item;
+import make.web.item.repository.ItemRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-
-import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.*;
 

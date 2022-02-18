@@ -1,25 +1,17 @@
 package make.web.service;
 
-import make.web.constant.SellStatus;
-import make.web.dto.ItemFormDto;
-import make.web.entity.Item;
-import make.web.entity.ItemImg;
-import make.web.repository.ItemImgRepository;
-import make.web.repository.ItemRepository;
-import org.junit.jupiter.api.Test;
+import make.web.item.repository.ItemImgRepository;
+import make.web.item.repository.ItemRepository;
+import make.web.item.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
