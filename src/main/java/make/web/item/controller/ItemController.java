@@ -175,11 +175,14 @@ public class ItemController {
         return "redirect:/alert";
     }
 
-    @GetMapping(value = {"/{memberId}/items", "/{memberId}/items/{page}"})
-    public String itemManage(ItemSearchDto itemSearchDto, @PathVariable("memberId") Long memberId,
+    @GetMapping(value = {"/sell", "/sell/{page}"})
+    public String itemManage(ItemSearchDto itemSearchDto, Principal principal,
                              @PathVariable("page") Optional<Integer> page, Model model) {
 
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 5); //한 페이지에 5개씩 배치
+
+        Long memberId = memberService.getMember(principal.getName()).getId();
+
         Page<Item> items = itemService.getSellPage(itemSearchDto, pageable, memberId);
 
         model.addAttribute("items", items);

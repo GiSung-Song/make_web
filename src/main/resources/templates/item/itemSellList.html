@@ -45,7 +45,7 @@
         아이템 판매 목록
     </h2>
 
-    <form th:action="@{'/item/${#authentication.Principal.id}/items/' + ${items.number}}" role="form" method="get" th:object="${items}">
+    <form th:action="@{'/item/sell/' + ${items.number}}" role="form" method="get" th:object="${items}">
         <table class="table">
             <thead>
             <tr>
@@ -57,7 +57,7 @@
             </thead>
             <tbody>
             <tr th:each="item, status: ${items.getContent()}">
-                <td th:text="${item.id}"></td>
+                <td th:text="${status.count}"></td>
                 <td>
                     <a th:href="'/item/'+${item.id}" th:text="${item.itemNm}"></a>
                 </td>
