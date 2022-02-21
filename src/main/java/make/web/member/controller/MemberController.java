@@ -2,15 +2,14 @@ package make.web.member.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import make.web.member.dto.FindIdFormDto;
-import make.web.member.dto.FindPwFormDto;
-import make.web.member.dto.MemberFormDto;
+import make.web.member.dto.*;
 import make.web.member.entity.Member;
 import make.web.member.service.MemberService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -86,8 +85,8 @@ public class MemberController {
         }
 
         try {
-            Member member = memberService.findMemberId(findIdFormDto);
-            String findMail = member.getEmail();
+            IdFormDto idFormDto = memberService.findMemberId(findIdFormDto);
+            String findMail = idFormDto.getEmail();
             model.addAttribute("findMail", findMail);
         } catch (EntityNotFoundException e) {
             log.info("등록된 이메일이 없는 경우");
@@ -104,7 +103,6 @@ public class MemberController {
         log.info("/member/findPw 비밀번호 찾기로 이동");
         return "member/findMemberPwForm";
     }
-
 
     //이메일로 임시비밀번호 보내는 기능 구현해야 함.
     @PostMapping("/findPw")
@@ -132,14 +130,7 @@ public class MemberController {
 
         try {
             String email = principal.getName();
-            Member member = memberService.getMember(email);
-
-            MemberFormDto memberFormDto = MemberFormDto.builder()
-                    .email(member.getEmail())
-                    .name(member.getName())
-                    .phone(member.getPhone())
-                    .address(member.getAddress())
-                    .build();
+            MemberFormDto memberFormDto = memberService.getMember(email);
 
             model.addAttribute("member", memberFormDto);
 
@@ -150,6 +141,45 @@ public class MemberController {
         }
 
         return "/member/infoMemberForm";
+    }
+
+    @GetMapping("/edit")
+    public String connectEdit(Model model, Principal principal) {
+        MemberFormDto memberFormDto = memberService.getMember(principal.getName());
+
+        EditFormDto editFormDto = new EditFormDto();
+
+        editFormDto.setAddress(memberFormDto.getAddress());
+        editFormDto.setEmail(memberFormDto.getEmail());
+        editFormDto.setName(memberFormDto.getName());
+        editFormDto.setPhone(memberFormDto.getPhone());
+
+        model.addAttribute("member", editFormDto);
+
+        return "member/editMemberForm";
+    }
+
+    @PostMapping("/edit")
+    public String editMember(@Valid @ModelAttribute("member") EditFormDto editFormDto, BindingResult bindingResult,
+                             Model model, Principal principal,  RedirectAttributes redirectAttributes) {
+
+        if(bindingResult.hasErrors()) {
+            log.info("Edit Form Error");
+            return "member/editMemberForm";
+        }
+
+        try {
+            memberService.editMember(principal.getName(), editFormDto);
+        } catch (Exception e) {
+            model.addAttribute("errorMsg", "이미 존재하는 번호입니다.");
+            return "member/editMemberForm";
+        }
+
+        log.info("Member 수정 완료");
+        redirectAttributes.addFlashAttribute("msg", "정보 수정이 완료되었습니다.");
+        redirectAttributes.addFlashAttribute("url", "/member/info");
+
+        return "redirect:/alert";
     }
 
 }

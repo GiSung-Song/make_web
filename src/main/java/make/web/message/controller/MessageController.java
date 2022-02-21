@@ -2,6 +2,7 @@ package make.web.message.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import make.web.member.dto.MemberFormDto;
 import make.web.message.dto.MessageDto;
 import make.web.message.dto.MessageSearchDto;
 import make.web.message.dto.SendMessageDto;
@@ -41,8 +42,8 @@ public class MessageController {
         log.info("쪽지함 가져오기");
 
         String email = principal.getName();
-        Member member = memberService.getMember(email);
-        Long id = member.getId();
+        MemberFormDto memberFormDto = memberService.getMember(email);
+        Long id = memberFormDto.getId();
 
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 10);
         Page<MessageDto> message = messageService.getMessageList(messageSearchDto, pageable, id);

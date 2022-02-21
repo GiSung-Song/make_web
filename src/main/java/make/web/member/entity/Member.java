@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import make.web.etc.constant.Role;
+import make.web.member.dto.EditFormDto;
 import make.web.member.dto.MemberFormDto;
 import make.web.etc.entity.BaseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,19 +48,28 @@ public class Member extends BaseEntity {
     }
 
     public static Member createMember(MemberFormDto memberFormDto, PasswordEncoder passwordEncoder) {
-        String dtoPhone = memberFormDto.getPhone();
-        dtoPhone = dtoPhone.replaceAll("-", "");
+//        String dtoPhone = memberFormDto.getPhone();
+//        dtoPhone = dtoPhone.replaceAll("-", "");
 
         Member member = Member.builder()
                 .name(memberFormDto.getName())
                 .email(memberFormDto.getEmail())
                 .address(memberFormDto.getAddress())
-                .phone(dtoPhone)
+                .phone(memberFormDto.getPhone())
                 .password(passwordEncoder.encode(memberFormDto.getPassword()))
                 .role(Role.USER)
                 .build();
 
         return member;
+    }
+
+    public void editMember(EditFormDto dto) {
+
+       String phone = dto.getPhone();
+//       phone = phone.replaceAll("-", "");
+
+       this.address = dto.getAddress();
+       this.phone = phone;
     }
 }
 

@@ -6,6 +6,7 @@ import make.web.item.dto.ItemFormDto;
 import make.web.item.dto.ItemSearchDto;
 import make.web.item.entity.Item;
 import make.web.item.service.ItemService;
+import make.web.member.dto.MemberFormDto;
 import make.web.member.service.MemberService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -182,6 +183,9 @@ public class ItemController {
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 5); //한 페이지에 5개씩 배치
 
         Long memberId = memberService.getMember(principal.getName()).getId();
+
+        MemberFormDto member = memberService.getMember(principal.getName());
+
 
         Page<Item> items = itemService.getSellPage(itemSearchDto, pageable, memberId);
 

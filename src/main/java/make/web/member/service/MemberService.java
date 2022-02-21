@@ -2,8 +2,7 @@ package make.web.member.service;
 
 import lombok.RequiredArgsConstructor;
 import make.web.etc.config.CustomUserDetails;
-import make.web.member.dto.FindIdFormDto;
-import make.web.member.dto.FindPwFormDto;
+import make.web.member.dto.*;
 import make.web.member.entity.Member;
 import make.web.member.repository.MemberRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,16 +29,23 @@ public class MemberService implements UserDetailsService {
     //회원 가입
     public Member saveMember(Member member) {
         checkDuplicateMember(member);
+
         return memberRepository.save(member);
     }
 
-    //중복 체크
     private void checkDuplicateMember(Member member) {
-        Member findMember = memberRepository.findByEmail(member.getEmail());
+        Member phoneMember = memberRepository.findByPhone(member.getPhone());
 
-        if(findMember != null) {
-            throw new IllegalStateException("이미 가입된 회원입니다.");
+        if(phoneMember != null) {
+            throw new IllegalStateException("이미 가입된 번호입니다.");
         }
+
+        Member emailMember = memberRepository.findByEmail(member.getEmail());
+
+        if(emailMember != null) {
+            throw new IllegalStateException("이미 가입된 이메일입니다.");
+        }
+
     }
 
     /**
@@ -58,8 +64,30 @@ public class MemberService implements UserDetailsService {
         return new CustomUserDetails(member);
     }
 
-    public Member findByNameAndPhone(FindIdFormDto findIdFormDto) {
+    @Transactional(readOnly = true)
+    public IdFormDto findMemberId(FindIdFormDto findIdFormDto) {
+
+//        String phone = findIdFormDto.getPhone().replaceAll("-", "");
+
         Member member = memberRepository.findByNameAndPhone(findIdFormDto.getName(), findIdFormDto.getPhone());
+
+        if(member == null) {
+            throw new EntityNotFoundException("등록된 이메일이 없습니다.");
+        } else {
+            IdFormDto idFormDto = new IdFormDto();
+            idFormDto.setEmail(member.getEmail());
+
+            return idFormDto;
+        }
+
+    }
+
+    @Transactional(readOnly = true)
+    public Member findMemberPw(FindPwFormDto findPwFormDto) {
+
+//        String phone = findPwFormDto.getPhone().replaceAll("-", "");
+
+        Member member = memberRepository.findByNameAndPhoneAndEmail(findPwFormDto.getName(), findPwFormDto.getPhone(), findPwFormDto.getEmail());
 
         if(member == null) {
             throw new EntityNotFoundException("등록된 회원이 없습니다.");
@@ -67,25 +95,37 @@ public class MemberService implements UserDetailsService {
             return member;
     }
 
-    public Member findMemberId(FindIdFormDto findIdFormDto) {
-        return findByNameAndPhone(findIdFormDto);
-    }
-
-    public Member findMemberPw(FindPwFormDto findPwFormDto) {
-        Member member = memberRepository.findByEmail(findPwFormDto.getEmail());
-
-        if(member == null) {
-            throw new EntityNotFoundException("등록된 이메일이 없습니다.");
-        } else
-            return member;
-    }
-
-    public Member getMember(String email) {
+    @Transactional(readOnly = true)
+    public MemberFormDto getMember(String email) {
         Member member = memberRepository.findByEmail(email);
 
         if(member == null) {
             throw new EntityNotFoundException("등록된 이메일이 없습니다.");
-        } else
-            return member;
+        } else {
+            MemberFormDto memberFormDto = new MemberFormDto();
+
+            memberFormDto.setEmail(member.getEmail());
+            memberFormDto.setId(member.getId());
+            memberFormDto.setName(member.getName());
+            memberFormDto.setPhone(member.getPhone());
+            memberFormDto.setAddress(member.getAddress());
+
+            return memberFormDto;
+        }
     }
+
+    public Long editMember(String email, EditFormDto editFormDto){
+        Member member = memberRepository.findByEmail(email);
+
+        Member savedMember = memberRepository.findByPhone(editFormDto.getPhone());
+
+        if(savedMember != null) {
+            throw new IllegalStateException("등록된 번호가 있습니다.");
+        }
+
+        member.editMember(editFormDto);
+
+        return member.getId();
+    }
+
 }

@@ -22,7 +22,7 @@
             <input type="text" class="form-control" th:value="${member.phone}" readonly>
         </div>
         <div style="text-align: center">
-            <button type="button" class="btn btn-primary" th:onlick="@{|/member/info/edit|}">회원 정보 수정</button>
+            <button type="button" class="btn btn-primary" th:onclick="|location.href='@{'/member/edit'}'|">회원 정보 수정</button>
         </div>
 
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">

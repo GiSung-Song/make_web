@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .maxSessionsPreventsLogin(true) //true : 동시 로그인 차단, false : 기존 세션 만료(default)
                 .and()
                 .sessionFixation().changeSessionId() //새로운 sessionId 발급
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) //스프링 시큐리티가 필요 시 생성(기본값)
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS) //스프링 시큐리티가 필요 시 생성(기본값)
         ;
 
         http.authorizeRequests()

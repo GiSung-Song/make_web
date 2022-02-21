@@ -2,12 +2,13 @@ package make.web.member.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import javax.validation.constraints.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class MemberFormDto {
 
     private Long id;
@@ -39,5 +40,4 @@ public class MemberFormDto {
         this.address = address;
         this.phone = phone;
     }
-
 }
