@@ -7,6 +7,7 @@ import make.web.member.entity.Member;
 import make.web.member.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
@@ -37,7 +39,7 @@ public class MemberController {
         return "member/createMemberForm";
     }
 
-    @PostMapping("/new")
+//    @PostMapping("/new")
     public String signUp(@Valid @ModelAttribute("member") MemberFormDto memberFormDto,
                          BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
 
@@ -61,6 +63,7 @@ public class MemberController {
 
         return "redirect:/alert";
     }
+
 
     @GetMapping("/login")
     public String login() {
@@ -183,6 +186,66 @@ public class MemberController {
         log.info("Member 수정 완료");
         redirectAttributes.addFlashAttribute("msg", "정보 수정이 완료되었습니다.");
         redirectAttributes.addFlashAttribute("url", "/member/info");
+
+        return "redirect:/alert";
+    }
+
+    @PostMapping("/new")
+    public String registerMember(@Valid @ModelAttribute("member") MemberFormDto memberFormDto, HttpSession session,
+                         BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
+
+        if(bindingResult.hasErrors()) {
+            log.info("validation error");
+            return "member/createMemberForm";
+        }
+
+        try {
+            Member member = Member.createMember(memberFormDto, passwordEncoder);
+            String key = memberService.checkMember(member);//중복이 없으면 키 생성
+            member.addKey(key); //멤버에 setKey
+            session.setAttribute("checking", member);
+            memberService.sendAuth(member, member.getKey()); //메일 보내기
+
+            log.info("key = {}", key);
+            log.info("member.getKey() = {}", member.getKey());
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "member/createMemberForm";
+        }
+
+        redirectAttributes.addFlashAttribute("msg", "메일로 인증번호를 전송했습니다.");
+        redirectAttributes.addFlashAttribute("url", "/member/new/auth");
+
+        return "redirect:/alert";
+    }
+
+    @GetMapping("/new/auth")
+    public String confirmKey(@ModelAttribute("auth") AuthFormDto authFormDto) {
+        return "/member/auth";
+    }
+
+    @PostMapping("/new/auth")
+    public String checkKey(@ModelAttribute("auth") AuthFormDto authFormDto, HttpSession session,
+                           RedirectAttributes redirectAttributes) {
+
+        Member member = (Member) session.getAttribute("checking");
+        String key = member.getKey();
+
+        log.info("member.getKey = {}", key);
+        log.info("enter key = {}", authFormDto.getKey());
+
+        if(!key.equals(authFormDto.getKey())) {
+            redirectAttributes.addFlashAttribute("msg", "인증번호가 다릅니다.");
+            redirectAttributes.addFlashAttribute("url", "/member/new/auth");
+
+            return "redirect:/alert";
+        }
+
+        memberService.saveMember(member);
+
+        redirectAttributes.addFlashAttribute("msg", "회원가입이 성공하였습니다.");
+        redirectAttributes.addFlashAttribute("url", "/member/login");
+        session.removeAttribute("checking");
 
         return "redirect:/alert";
     }

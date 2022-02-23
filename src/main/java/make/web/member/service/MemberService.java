@@ -35,10 +35,31 @@ public class MemberService implements UserDetailsService {
 
     //회원 가입
     public Member saveMember(Member member) {
+        return memberRepository.save(member);
+    }
+
+    public String checkMember(Member member) {
         checkDuplicatePhone(member);
         checkDuplicateEmail(member);
 
-        return memberRepository.save(member);
+        String key = getKey();
+
+        return key;
+    }
+
+    private String getKey() {
+        char[] tmp = new char[6];
+
+        for(int i=0; i<tmp.length; i++) {
+            int div = (int) Math.floor(Math.random() * 2);
+
+            if(div == 0)
+                tmp[i] = (char) (Math.random() * 10 + '0');
+            else
+                tmp[i] = (char) (Math.random() * 26 + 'A');
+        }
+
+        return new String(tmp);
     }
 
     private void checkDuplicatePhone(Member member) {
@@ -150,15 +171,12 @@ public class MemberService implements UserDetailsService {
         message.setSubject("인증번호가 도착했습니다."); //제목
 
         message.setText(key, "utf-8");
-        message.setFrom(new InternetAddress("이메일 적기", "Test 인증"));
 
         return message;
     }
 
     //메일 보내기
     public void sendAuth(Member member, String key) throws Exception {
-        checkDuplicateEmail(member);
-        checkDuplicatePhone(member);
         MimeMessage message = createMessage(member, key);
 
         try {

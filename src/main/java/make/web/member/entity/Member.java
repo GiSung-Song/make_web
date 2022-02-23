@@ -37,6 +37,9 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role; //ADMIN or USER or GUEST
 
+    @Transient
+    public String key;
+
    @Builder
     public Member(String name, String email, String password, String address, Role role, String phone) {
         this.name = name;
@@ -48,8 +51,6 @@ public class Member extends BaseEntity {
     }
 
     public static Member createMember(MemberFormDto memberFormDto, PasswordEncoder passwordEncoder) {
-//        String dtoPhone = memberFormDto.getPhone();
-//        dtoPhone = dtoPhone.replaceAll("-", "");
 
         Member member = Member.builder()
                 .name(memberFormDto.getName())
@@ -70,6 +71,10 @@ public class Member extends BaseEntity {
 
        this.address = dto.getAddress();
        this.phone = phone;
+    }
+
+    public void addKey(String key) {
+       this.key = key;
     }
 }
 
