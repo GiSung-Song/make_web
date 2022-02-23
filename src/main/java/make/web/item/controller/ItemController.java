@@ -73,7 +73,7 @@ public class ItemController {
         return "redirect:/alert";
     }
 
-    @GetMapping(value = "/{itemId}")
+    @GetMapping("/{itemId}")
     public String itemInfo(@PathVariable("itemId") Long itemId, Model model, RedirectAttributes redirectAttributes, Principal principal) {
 
         log.info("아이템 정보 접속");

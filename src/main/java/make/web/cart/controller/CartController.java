@@ -25,12 +25,10 @@ import java.util.List;
 public class CartController {
 
     private final CartService cartService;
-    private final ItemService itemService;
-    private final MemberService memberService;
 
     @PostMapping("/cart")
     public @ResponseBody
-    ResponseEntity addCart(@RequestBody @Valid CartItemDto cartItemDto, Model model,
+    ResponseEntity addCart(@RequestBody @Valid CartItemDto cartItemDto,
                            BindingResult bindingResult, Principal principal) {
 
         if(bindingResult.hasErrors()) {
@@ -68,21 +66,6 @@ public class CartController {
 
         return "cart/cartList";
 
-        /*
-
-        String email = principal.getName();
-        Long id = cartService.getCartId(email);
-
-        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 6);
-        Page<CartListDto> items = cartService.getCart(itemSearchDto, pageable, id);
-
-        model.addAttribute("items", items);
-        model.addAttribute("dto", itemSearchDto);
-        model.addAttribute("maxPage", 5); //페이지 수를 5개씩 끊음
-
-        return "cart/cartListV2";
-
-         */
     }
 
     @DeleteMapping("/cart/{cartItemId}")
