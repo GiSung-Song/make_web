@@ -203,6 +203,10 @@ public class MemberController {
             Member member = Member.createMember(memberFormDto, passwordEncoder);
             String key = memberService.checkMember(member);//중복이 없으면 키 생성
             member.addKey(key); //멤버에 setKey
+
+            if(session.getAttribute("checking") != null)
+                session.removeAttribute("checking");
+
             session.setAttribute("checking", member);
             memberService.sendAuth(member, member.getKey()); //메일 보내기
 
@@ -220,25 +224,23 @@ public class MemberController {
     }
 
     @GetMapping("/new/auth")
-    public String confirmKey(@ModelAttribute("auth") AuthFormDto authFormDto) {
-        return "/member/auth";
+    public String confirmKey(@ModelAttribute("dto") AuthFormDto authFormDto) {
+        return "/member/registerKey";
     }
 
     @PostMapping("/new/auth")
-    public String checkKey(@ModelAttribute("auth") AuthFormDto authFormDto, HttpSession session,
-                           RedirectAttributes redirectAttributes) {
+    public String checkKey(@ModelAttribute("dto") AuthFormDto authFormDto, HttpSession session,
+                           RedirectAttributes redirectAttributes, Model model) {
 
         Member member = (Member) session.getAttribute("checking");
         String key = member.getKey();
 
         log.info("member.getKey = {}", key);
-        log.info("enter key = {}", authFormDto.getKey());
+        log.info("enter key = {}", authFormDto.getAuthKey());
 
-        if(!key.equals(authFormDto.getKey())) {
-            redirectAttributes.addFlashAttribute("msg", "인증번호가 다릅니다.");
-            redirectAttributes.addFlashAttribute("url", "/member/new/auth");
-
-            return "redirect:/alert";
+        if(!key.equals(authFormDto.getAuthKey())) {
+            model.addAttribute("errorMessage", "잘못된 인증번호입니다.");
+            return "member/registerKey";
         }
 
         memberService.saveMember(member);
