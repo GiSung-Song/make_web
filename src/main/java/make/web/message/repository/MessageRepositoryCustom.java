@@ -9,4 +9,6 @@ public interface MessageRepositoryCustom {
 
     Page<Message> getMessageList(MessageSearchDto dto, Pageable pageable, Long memberId);
 
+    Page<Message> sendMessageList(MessageSearchDto dto, Pageable pageable, Long memberId);
+
 }

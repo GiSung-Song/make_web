@@ -53,7 +53,7 @@
     <br><br>
     <div>
         <h2 class="mb-4">
-            받은 쪽지함
+            보낸 쪽지함
         </h2>
     </div>
     <form th:action="@{'/message/list/' + ${message.number}}" role="form" method="get" th:object="${message}">
@@ -63,9 +63,9 @@
             <tr>
                 <td>메시지 번호</td>
                 <td>제목</td>
-                <td>보낸 사람</td>
+                <td>받는 사람</td>
                 <td>상태</td>
-                <td>받은 시간</td>
+                <td>보낸 시간</td>
             </tr>
             </tr>
             </thead>
@@ -75,7 +75,7 @@
                 <td>
                     <a th:href="'/message/' + ${msg.id}" th:text="${msg.title}"></a>
                 </td>
-                <td th:text="${msg.sendFrom}"></td>
+                <td th:text="${msg.sendTo}"></td>
                 <td th:text="${msg.confirm == T(make.web.message.MessageStatus).READ} ? '읽음' : '읽지않음'"></td>
                 <td th:text="${#temporals.format(msg.sendTime, 'yyyy-MM-dd HH:mm')}"></td>
             </tr>

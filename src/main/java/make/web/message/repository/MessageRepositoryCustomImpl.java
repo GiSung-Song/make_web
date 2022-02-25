@@ -44,6 +44,27 @@ public class MessageRepositoryCustomImpl implements MessageRepositoryCustom{
         return new PageImpl<>(content, pageable, total);
     }
 
+    @Override
+    public Page<Message> sendMessageList(MessageSearchDto dto, Pageable pageable, Long memberId) {
+        QMessage message = QMessage.message;
+
+        QueryResults<Message> results = queryFactory
+                .selectFrom(message)
+                .where(message.sendFrom.id.eq(memberId),
+                        regDateAfter(dto.getSearchDateType()),
+                        confirmCheck(dto.getSearchConfirm()),
+                        titleNmLike(dto.getSearchQuery()))
+                .orderBy(message.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        List<Message> content = results.getResults();
+        long total = results.getTotal();
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
     private BooleanExpression confirmCheck(MessageStatus confirm) {
         return confirm == null ? null : QMessage.message.confirm.eq(confirm);
     }

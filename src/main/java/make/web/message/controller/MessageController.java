@@ -118,4 +118,24 @@ public class MessageController {
 
     }
 
+    @GetMapping(value = {"/message/sendList", "/message/sendList/{page}"})
+    public String sendMessageList(Principal principal, Model model, MessageSearchDto messageSearchDto,
+                                 @PathVariable("page") Optional<Integer> page, MessageDto messageDto) {
+
+        log.info("쪽지함 가져오기");
+
+        String email = principal.getName();
+        MemberFormDto memberFormDto = memberService.getMember(email);
+        Long id = memberFormDto.getId();
+
+        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 10);
+        Page<MessageDto> message = messageService.sendMessageList(messageSearchDto, pageable, id);
+
+        model.addAttribute("message", message);
+        model.addAttribute("dto", messageSearchDto);
+        model.addAttribute("maxPage", 5);
+
+        return "/message/sendMessageList";
+    }
+
 }

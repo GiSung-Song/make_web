@@ -30,6 +30,13 @@ public class MessageService {
         return entity.map(MessageDto::of);
     }
 
+    @Transactional(readOnly = true)
+    public Page<MessageDto> sendMessageList(MessageSearchDto messageSearchDto, Pageable pageable, Long memberId) {
+        Page<Message> entity = messageRepository.sendMessageList(messageSearchDto, pageable, memberId);
+
+        return entity.map(MessageDto::of);
+    }
+
     public Long sendMessage(SendMessageDto dto) throws Exception {
         Member sender = memberRepository.findByEmail(dto.getSendFrom());
         Member receiver = memberRepository.findByEmail(dto.getSendTo());

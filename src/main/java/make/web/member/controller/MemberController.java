@@ -8,6 +8,7 @@ import make.web.member.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -114,7 +115,8 @@ public class MemberController {
 
     //이메일로 임시비밀번호 보내는 기능 구현해야 함.
     @PostMapping("/findPw")
-    public String findPw(@Valid @ModelAttribute("member") FindPwFormDto findPwFormDto, BindingResult bindingResult, Model model) {
+    public String findPw(@Valid @ModelAttribute("member") FindPwFormDto findPwFormDto, BindingResult bindingResult,
+                         Model model, RedirectAttributes redirectAttributes) {
 
         if(bindingResult.hasErrors()) {
             log.info("validation error");
@@ -122,14 +124,17 @@ public class MemberController {
         }
 
         try {
-            Member member = memberService.findMemberPw(findPwFormDto);
-        } catch (EntityNotFoundException e) {
-            log.info("등록된 이메일이 없는 경우");
+            Member member = memberService.findMemberPw(findPwFormDto); //회원을 찾았으면,
+            memberService.sendPassword(member, passwordEncoder);
+        } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "member/findMemberPwForm";
         }
 
-        return "/member/find/pwForm";
+        redirectAttributes.addFlashAttribute("msg", "임시 비밀번호를 메일로 보냈습니다.");
+        redirectAttributes.addFlashAttribute("url", "/member/login");
+
+        return "redirect:/alert";
     }
 
     @GetMapping("/info")
@@ -250,6 +255,34 @@ public class MemberController {
         session.removeAttribute("checking");
 
         return "redirect:/alert";
+    }
+
+    @GetMapping("/editPass")
+    public String editPassForm(@ModelAttribute("form") EditPassForm form) {
+        return "/member/editPassForm";
+    }
+
+    @PostMapping("/editPass")
+    public String editPass(@Valid @ModelAttribute("form") EditPassForm form, BindingResult bindingResult,
+                           Principal principal, RedirectAttributes redirectAttributes, Model model) {
+
+        if(bindingResult.hasErrors()) {
+            return "/member/editPassForm";
+        }
+
+        String email = principal.getName();
+
+        try {
+            memberService.editPassword(form, email, passwordEncoder);
+        } catch (Exception e) {
+            model.addAttribute("errorMsg", e.getMessage());
+        }
+
+        //강제 로그아웃 하게 한 후 로그인 사이트로 이동하게 해야함.(아직 미구현)
+        redirectAttributes.addFlashAttribute("msg", "비밀번호를 변경했습니다.");
+        redirectAttributes.addFlashAttribute("url", "/member/login");
+
+        return "/member/editPassForm";
     }
 
 }

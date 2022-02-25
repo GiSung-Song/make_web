@@ -76,5 +76,10 @@ public class Member extends BaseEntity {
     public void addKey(String key) {
        this.key = key;
     }
+
+    //임시 비밀번호로 설정
+    public void editPass(String password, PasswordEncoder passwordEncoder) {
+       this.password = passwordEncoder.encode(password);
+    }
 }
 

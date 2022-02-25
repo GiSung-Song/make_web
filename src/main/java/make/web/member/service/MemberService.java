@@ -10,6 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +46,21 @@ public class MemberService implements UserDetailsService {
         String key = getKey();
 
         return key;
+    }
+
+    private String getTempPass() {
+        char[] tmp = new char[10];
+
+        for(int i=0; i<tmp.length; i++) {
+            int div = (int) Math.floor(Math.random() * 2);
+
+            if(div == 0)
+                tmp[i] = (char) (Math.random() * 10 + '0');
+            else
+                tmp[i] = (char) (Math.random() * 26 + 'A');
+        }
+
+        return new String(tmp);
     }
 
     private String getKey() {
@@ -117,9 +133,7 @@ public class MemberService implements UserDetailsService {
     @Transactional(readOnly = true)
     public Member findMemberPw(FindPwFormDto findPwFormDto) {
 
-//        String phone = findPwFormDto.getPhone().replaceAll("-", "");
-
-        Member member = memberRepository.findByNameAndPhoneAndEmail(findPwFormDto.getName(), findPwFormDto.getPhone(), findPwFormDto.getEmail());
+        Member member = memberRepository.findByNameAndEmail(findPwFormDto.getName(), findPwFormDto.getEmail());
 
         if(member == null) {
             throw new EntityNotFoundException("등록된 회원이 없습니다.");
@@ -161,28 +175,54 @@ public class MemberService implements UserDetailsService {
         return member.getId();
     }
 
-    //메일 생성하기
-    private MimeMessage createMessage(Member member, String key) throws Exception {
+    //메일 보내기(인증 키 보내기)
+    public void sendAuth(Member member, String key) throws Exception {
 
-        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessage msg = mailSender.createMimeMessage();
         String email = member.getEmail();
 
-        message.addRecipients(Message.RecipientType.TO, email); //보내는 대상
-        message.setSubject("인증번호가 도착했습니다."); //제목
+        msg.addRecipients(Message.RecipientType.TO, email);
+        msg.setSubject("인증번호가 도착했습니다."); //제목
 
-        message.setText(key, "utf-8");
-
-        return message;
-    }
-
-    //메일 보내기
-    public void sendAuth(Member member, String key) throws Exception {
-        MimeMessage message = createMessage(member, key);
+        msg.setText(key, "utf-8");
 
         try {
-            mailSender.send(message);
+            mailSender.send(msg);
         } catch (MailException e) {
             throw new IllegalArgumentException();
         }
     }
+
+    //메일 보내기(임시 비밀번호 보내기)
+    public void sendPassword(Member member, PasswordEncoder passwordEncoder) throws Exception {
+        MimeMessage msg = mailSender.createMimeMessage();
+        String email = member.getEmail();
+
+        msg.addRecipients(Message.RecipientType.TO, email);
+        msg.setSubject("임시 비밀번호가 도착했습니다."); //제목
+
+        String tempPass = getTempPass();
+
+        msg.setText(tempPass, "utf-8");
+        member.editPass(tempPass, passwordEncoder); //임시 비밀번호로 설정
+
+        try {
+            mailSender.send(msg);
+        } catch (MailException e) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void editPassword(EditPassForm form, String email,PasswordEncoder passwordEncoder) throws Exception {
+        Member member = memberRepository.findByEmail(email);
+
+        boolean matches = passwordEncoder.matches(form.getNowPass(), member.getPassword());
+
+        if(matches == false)
+            throw new Exception("비밀번호가 틀립니다.");
+        else {
+            member.editPass(form.getEditPass(), passwordEncoder);
+        }
+    }
+
 }
