@@ -219,7 +219,7 @@ public class MemberService implements UserDetailsService {
         boolean matches = passwordEncoder.matches(form.getNowPass(), member.getPassword());
 
         if(matches == false)
-            throw new Exception("비밀번호가 틀립니다.");
+            throw new Exception("현재 비밀번호가 틀립니다.");
         else {
             member.editPass(form.getEditPass(), passwordEncoder);
         }

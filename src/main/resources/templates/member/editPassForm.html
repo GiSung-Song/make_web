@@ -37,7 +37,7 @@
         <div class="form-group">
             <label th:for="nowPass">현재 비밀번호 입력</label>
             <input type="password" th:field="*{nowPass}" class="form-control" placeholder="현재 비밀번호를 입력해주세요">
-            <p th:if="${#fields.hasErrors('nowP')}" th:errors="*{phone}" class="fieldError">현재 비밀번호</p>
+            <p th:if="${#fields.hasErrors('nowPass')}" th:errors="*{phone}" class="fieldError">현재 비밀번호</p>
         </div>
         <div class="form-group">
             <label th:for="editPass">변경 비밀번호 입력</label>

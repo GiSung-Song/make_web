@@ -278,11 +278,10 @@ public class MemberController {
             model.addAttribute("errorMsg", e.getMessage());
         }
 
-        //강제 로그아웃 하게 한 후 로그인 사이트로 이동하게 해야함.(아직 미구현)
-        redirectAttributes.addFlashAttribute("msg", "비밀번호를 변경했습니다.");
-        redirectAttributes.addFlashAttribute("url", "/member/login");
+        redirectAttributes.addFlashAttribute("msg", "비밀번호를 변경했습니다. 다시 로그인해주세요.");
+        redirectAttributes.addFlashAttribute("url", "/member/logout");
 
-        return "/member/editPassForm";
+        return "redirect:/alert";
     }
 
 }
