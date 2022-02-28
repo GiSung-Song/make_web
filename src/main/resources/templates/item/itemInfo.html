@@ -55,7 +55,11 @@
 
             var seller = [[${email}]];
 
-            location.href='/message/send?email=' + seller;
+            if(seller != null) {
+                location.href='/message/send?email=' + seller;
+            } else {
+                location.href='/member/login';
+            }
         }
 
     </script>

@@ -99,6 +99,8 @@ public class ItemController {
             else {
                 model.addAttribute("email", seller);
             }
+        } else {
+            model.addAttribute("email", null);
         }
 
         return "item/itemInfo";
